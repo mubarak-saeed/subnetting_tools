@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../../core/network/cisco_network_engine.dart';
+import '../../../../core/network/ip_network_engine.dart';
 import '../../../../core/widgets/cidr_selector_chips.dart';
 import '../../../../core/widgets/ip_input_field.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -37,15 +38,18 @@ class _CiscoCliPageState extends State<CiscoCliPage> {
     super.dispose();
   }
 
+  /// Generates Cisco CLI config safely — returns null if IP is invalid.
+  Map<String, String>? _safeGenerateCli() {
+    final ip = _ipController.text.trim();
+    if (!IpNetworkEngine.isValidIp(ip)) return null;
+    return CiscoNetworkEngine.generateCiscoCliConfig(ip: ip, cidr: _cidr);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final tr = AppLocalizations.of(context);
+    final tr  = AppLocalizations.of(context);
     final theme = Theme.of(context);
-
-    final cli = CiscoNetworkEngine.generateCiscoCliConfig(
-      ip: _ipController.text.trim(),
-      cidr: _cidr,
-    );
+    final cli = _safeGenerateCli();
 
     return Scaffold(
       appBar: AppBar(title: Text(tr.translate('ciscoCli'))),
@@ -96,7 +100,7 @@ class _CiscoCliPageState extends State<CiscoCliPage> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Text(
-                              'Wildcard: ${cli['wildcard']}',
+                              cli != null ? 'Wildcard: ${cli['wildcard']}' : '—',
                               style: TextStyle(color: theme.colorScheme.primary, fontWeight: FontWeight.bold, fontSize: 12),
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -110,13 +114,33 @@ class _CiscoCliPageState extends State<CiscoCliPage> {
                       onCidrSelected: (c) => setState(() => _cidr = c),
                     ),
                     const SizedBox(height: 16),
-                    _buildCliBox(context, tr.translate('ospfConfig'), cli['ospf']!),
-                    const SizedBox(height: 8),
-                    _buildCliBox(context, tr.translate('eigrpConfig'), cli['eigrp']!),
-                    const SizedBox(height: 8),
-                    _buildCliBox(context, tr.translate('aclConfig'), cli['acl']!),
-                    const SizedBox(height: 8),
-                    _buildCliBox(context, tr.translate('interfaceConfig'), cli['interface']!),
+                    if (cli == null)
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.errorContainer.withValues(alpha: 0.3),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.info_outline, color: theme.colorScheme.error, size: 16),
+                            const SizedBox(width: 8),
+                            Text(
+                              tr.translate('enterIp'),
+                              style: TextStyle(color: theme.colorScheme.error, fontWeight: FontWeight.w600),
+                            ),
+                          ],
+                        ),
+                      )
+                    else ...[
+                      _buildCliBox(context, tr.translate('ospfConfig'), cli['ospf']!),
+                      const SizedBox(height: 8),
+                      _buildCliBox(context, tr.translate('eigrpConfig'), cli['eigrp']!),
+                      const SizedBox(height: 8),
+                      _buildCliBox(context, tr.translate('aclConfig'), cli['acl']!),
+                      const SizedBox(height: 8),
+                      _buildCliBox(context, tr.translate('interfaceConfig'), cli['interface']!),
+                    ],
                   ],
                 ),
               ),

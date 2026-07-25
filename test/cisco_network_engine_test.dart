@@ -63,4 +63,21 @@ void main() {
       expect(summary, equals('172.16.0.0/22'));
     });
   });
+
+  group('CiscoNetworkEngine - IPv6 Calculation & Compression', () {
+    test('Compresses and expands IPv6 address according to RFC 5952', () {
+      final raw = '2001:0db8:85a3:0000:0000:8a2e:0370:7334';
+      final compressed = CiscoNetworkEngine.compressIpv6(raw);
+      final expanded = CiscoNetworkEngine.expandIpv6(compressed);
+
+      expect(compressed, equals('2001:db8:85a3::8a2e:370:7334'));
+      expect(expanded, equals('2001:0db8:85a3:0000:0000:8a2e:0370:7334'));
+    });
+
+    test('Calculates IPv6 scope details', () {
+      final details = CiscoNetworkEngine.calculateIpv6Details('2001:db8::1', 64);
+      expect(details.compressedIp, equals('2001:db8::1'));
+      expect(details.ipType, contains('Global Unicast'));
+    });
+  });
 }

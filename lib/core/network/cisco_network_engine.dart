@@ -36,6 +36,26 @@ class VlsmAllocation {
   });
 }
 
+class Ipv6Details {
+  final String rawInput;
+  final int prefixLength;
+  final String compressedIp;
+  final String expandedIp;
+  final String networkPrefix;
+  final String ipType;
+  final String usableRange;
+
+  const Ipv6Details({
+    required this.rawInput,
+    required this.prefixLength,
+    required this.compressedIp,
+    required this.expandedIp,
+    required this.networkPrefix,
+    required this.ipType,
+    required this.usableRange,
+  });
+}
+
 class CiscoNetworkEngine {
   /// Calculates Cisco Variable Length Subnet Masking (VLSM) allocations based on Cisco CCNA standards.
   static List<VlsmAllocation> calculateVlsm({
@@ -227,5 +247,55 @@ class CiscoNetworkEngine {
     }
 
     return hextets.join(':');
+  }
+
+  /// Expands shorthand IPv6 address to full 8-hextet string (32 hex characters)
+  static String expandIpv6(String ipv6) {
+    var str = ipv6.trim().toLowerCase();
+    if (str.isEmpty) return '';
+
+    if (str.contains('::')) {
+      final parts = str.split('::');
+      final left = parts[0].isEmpty ? [] : parts[0].split(':');
+      final right = parts[1].isEmpty ? [] : parts[1].split(':');
+      final missingCount = 8 - (left.length + right.length);
+      final middle = List.filled(missingCount, '0');
+      final fullList = [...left, ...middle, ...right];
+      return fullList.map((e) => e.padLeft(4, '0')).join(':');
+    }
+
+    final hextets = str.split(':');
+    if (hextets.length == 8) {
+      return hextets.map((e) => e.padLeft(4, '0')).join(':');
+    }
+
+    return ipv6;
+  }
+
+  /// Calculates IPv6 Subnet Details
+  static Ipv6Details calculateIpv6Details(String ipv6, int prefixLength) {
+    final expanded = expandIpv6(ipv6);
+    final compressed = compressIpv6(ipv6);
+
+    String scope = 'Global Unicast Address (Public IPv6)';
+    if (compressed.startsWith('fe80:')) {
+      scope = 'Link-Local Address (FE80::/10)';
+    } else if (compressed.startsWith('fc') || compressed.startsWith('fd')) {
+      scope = 'Unique Local Address (FC00::/7)';
+    } else if (compressed.startsWith('ff')) {
+      scope = 'Multicast Address (FF00::/8)';
+    } else if (compressed == '::1') {
+      scope = 'Loopback Address (::1/128)';
+    }
+
+    return Ipv6Details(
+      rawInput: ipv6,
+      prefixLength: prefixLength,
+      compressedIp: compressed,
+      expandedIp: expanded,
+      networkPrefix: '$compressed/$prefixLength',
+      ipType: scope,
+      usableRange: '$compressed - Host Space (2^${128 - prefixLength} addresses)',
+    );
   }
 }

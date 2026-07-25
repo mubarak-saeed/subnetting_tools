@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_theme_extension.dart';
+import '../../../../core/utils/page_routes.dart';
+import '../../../../core/widgets/cidr_lookup_dialog.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../cisco_cli/presentation/pages/cisco_cli_page.dart';
 import '../../../cisco_vlsm/presentation/pages/cisco_vlsm_page.dart';
@@ -14,7 +18,10 @@ import '../../../subnet_calculator/presentation/pages/subnet_calculator_page.dar
 import '../widgets/home_feature_card.dart';
 import '../widgets/home_hero_banner.dart';
 
-/// Main Dashboard Page presenting all network tools and utilities in an intuitive grid.
+/// Main Dashboard Page — displays all IPv4 network tools in a responsive grid.
+///
+/// Uses [AppThemeExtension] for gradient tokens and [AppPageRoutes] for
+/// smooth page transitions. Supports search filtering across all tools.
 class HomePage extends StatefulWidget {
   final VoidCallback? onToggleTheme;
   final VoidCallback? onToggleLocale;
@@ -28,145 +35,51 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   String _searchQuery = '';
 
+  /// Navigates to a page using the smooth fadeSlide transition.
+  void _navigate(Widget page) =>
+      Navigator.push(context, AppPageRoutes.fadeSlide(page));
+
   @override
   Widget build(BuildContext context) {
-    final tr = AppLocalizations.of(context);
+    final tr  = AppLocalizations.of(context);
+    final ext = Theme.of(context).extension<AppThemeExtension>()!;
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
-    final allFeatures = [
-      {
-        'id': 'ciscoVlsm',
-        'title': tr.translate('ciscoVlsm'),
-        'description': tr.translate('ciscoVlsmDesc'),
-        'icon': Icons.architecture,
-        'gradient': [const Color(0xFF38BDF8), const Color(0xFF0284C7)],
-        'onTap': () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CiscoVlsmPage())),
-      },
-      {
-        'id': 'ciscoCli',
-        'title': tr.translate('ciscoCli'),
-        'description': tr.translate('ciscoCliDesc'),
-        'icon': Icons.terminal,
-        'gradient': [const Color(0xFF6366F1), const Color(0xFF4F46E5)],
-        'onTap': () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CiscoCliPage())),
-      },
-      {
-        'id': 'ipCalculator',
-        'title': tr.translate('ipCalculator'),
-        'description': tr.translate('ipCalculatorDesc'),
-        'icon': Icons.calculate,
-        'gradient': [const Color(0xFF34D399), const Color(0xFF10B981)],
-        'onTap': () => Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => BlocProvider(
-              create: (_) => IpCalculatorCubit(IpCalculatorRepositoryImpl()),
-              child: const IpCalculatorPage(),
-            ),
-          ),
-        ),
-      },
-      {
-        'id': 'subnetCalculator',
-        'title': tr.translate('subnetCalculator'),
-        'description': tr.translate('subnetCalculatorDesc'),
-        'icon': Icons.alt_route,
-        'gradient': [const Color(0xFFFBBF24), const Color(0xFFF59E0B)],
-        'onTap': () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SubnetCalculatorPage())),
-      },
-      {
-        'id': 'ipConverter',
-        'title': tr.translate('ipConverter'),
-        'description': tr.translate('ipConverterDesc'),
-        'icon': Icons.swap_horiz,
-        'gradient': [const Color(0xFFA78BFA), const Color(0xFF8B5CF6)],
-        'onTap': () => Navigator.push(context, MaterialPageRoute(builder: (_) => const IpConverterPage())),
-      },
-      {
-        'id': 'ipClassifier',
-        'title': tr.translate('ipClassifier'),
-        'description': tr.translate('ipClassifierDesc'),
-        'icon': Icons.category,
-        'gradient': [const Color(0xFFF472B6), const Color(0xFFEC4899)],
-        'onTap': () => Navigator.push(context, MaterialPageRoute(builder: (_) => const IpClassifierPage())),
-      },
-      {
-        'id': 'rangeCalculator',
-        'title': tr.translate('rangeCalculator'),
-        'description': tr.translate('rangeCalculatorDesc'),
-        'icon': Icons.linear_scale,
-        'gradient': [const Color(0xFF38BDF8), const Color(0xFF06B6D4)],
-        'onTap': () => Navigator.push(context, MaterialPageRoute(builder: (_) => const RangeCalculatorPage())),
-      },
-      {
-        'id': 'history',
-        'title': tr.translate('history'),
-        'description': tr.translate('historyDesc'),
-        'icon': Icons.history,
-        'gradient': [const Color(0xFF94A3B8), const Color(0xFF64748B)],
-        'onTap': () => Navigator.push(context, MaterialPageRoute(builder: (_) => const HistoryPage())),
-      },
-    ];
+    final allFeatures = _buildFeatureList(tr, ext);
 
-    final filteredFeatures = allFeatures.where((f) {
-      final q = _searchQuery.toLowerCase();
-      final title = (f['title'] as String).toLowerCase();
-      final desc = (f['description'] as String).toLowerCase();
-      return title.contains(q) || desc.contains(q);
-    }).toList();
+    final filtered = _searchQuery.isEmpty
+        ? allFeatures
+        : allFeatures.where((f) {
+            final q = _searchQuery.toLowerCase();
+            return f.title.toLowerCase().contains(q) ||
+                f.description.toLowerCase().contains(q);
+          }).toList();
 
     return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: theme.colorScheme.primary.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Icon(Icons.lan, color: theme.colorScheme.primary, size: 20),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Text(
-                tr.translate('appTitle'),
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(theme.brightness == Brightness.dark ? Icons.light_mode : Icons.dark_mode),
-            tooltip: tr.translate('themeMode'),
-            onPressed: widget.onToggleTheme,
-          ),
-          IconButton(
-            icon: const Icon(Icons.language),
-            tooltip: tr.translate('language'),
-            onPressed: widget.onToggleLocale,
-          ),
-        ],
-      ),
+      appBar: _buildAppBar(context, tr, theme, isDark),
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
-          const SliverToBoxAdapter(child: HomeHeroBanner()),
-
-          // Search Bar
+          // ─── Hero Banner ───────────────────────────────────────
+          SliverToBoxAdapter(
+            child: HomeHeroBanner(toolCount: allFeatures.length),
+          ),
+          // ─── Search Field ──────────────────────────────────────
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.lg,
+                vertical  : AppSpacing.sm,
+              ),
               child: TextField(
                 onChanged: (val) => setState(() => _searchQuery = val),
                 decoration: InputDecoration(
-                  hintText: tr.translate('chooseFeature'),
-                  prefixIcon: const Icon(Icons.search),
-                  suffixIcon: _searchQuery.isNotEmpty
+                  hintText   : tr.translate('chooseFeature'),
+                  prefixIcon : const Icon(Icons.search_rounded),
+                  suffixIcon : _searchQuery.isNotEmpty
                       ? IconButton(
-                          icon: const Icon(Icons.clear),
+                          icon   : const Icon(Icons.clear_rounded),
                           onPressed: () => setState(() => _searchQuery = ''),
                         )
                       : null,
@@ -174,35 +87,248 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-
-          const SliverToBoxAdapter(child: SizedBox(height: 12)),
-
-          // Feature Grid
+          // ─── Section Label ─────────────────────────────────────
+          if (_searchQuery.isEmpty)
+            SliverToBoxAdapter(
+              child: _SectionHeader(
+                label: tr.translate('chooseFeature'),
+                count: allFeatures.length,
+              ),
+            ),
+          // ─── Feature Grid ──────────────────────────────────────
           SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
             sliver: SliverGrid(
               gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 260,
-                mainAxisSpacing: 14,
-                crossAxisSpacing: 14,
-                childAspectRatio: 1.15,
+                maxCrossAxisExtent: 200,
+                mainAxisSpacing   : AppSpacing.md,
+                crossAxisSpacing  : AppSpacing.md,
+                childAspectRatio  : 0.95,
               ),
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
-                  final feature = filteredFeatures[index];
+                  final f = filtered[index];
                   return HomeFeatureCard(
-                    title: feature['title'] as String,
-                    description: feature['description'] as String,
-                    icon: feature['icon'] as IconData,
-                    gradientColors: feature['gradient'] as List<Color>,
-                    onTap: feature['onTap'] as VoidCallback,
+                    title         : f.title,
+                    description   : f.description,
+                    icon          : f.icon,
+                    gradientColors: f.gradient,
+                    heroTag       : f.heroTag,
+                    onTap         : f.onTap,
                   );
                 },
-                childCount: filteredFeatures.length,
+                childCount: filtered.length,
               ),
             ),
           ),
-          const SliverToBoxAdapter(child: SizedBox(height: 24)),
+          const SliverToBoxAdapter(
+            child: SizedBox(height: AppSpacing.xl3),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ─── AppBar ────────────────────────────────────────────────────────
+  AppBar _buildAppBar(
+    BuildContext context,
+    AppLocalizations tr,
+    ThemeData theme,
+    bool isDark,
+  ) {
+    return AppBar(
+      title: Row(
+        children: [
+          Container(
+            padding   : const EdgeInsets.all(AppSpacing.sm),
+            decoration: BoxDecoration(
+              color        : theme.colorScheme.primary.withValues(alpha: 0.12),
+              borderRadius : BorderRadius.circular(AppSpacing.radiusSm),
+            ),
+            child: Icon(
+              Icons.lan_rounded,
+              color: theme.colorScheme.primary,
+              size : AppSpacing.iconMd,
+            ),
+          ),
+          const SizedBox(width: AppSpacing.sm),
+          Expanded(
+            child: Text(
+              tr.translate('appTitle'),
+              style   : theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
+      actions: [
+        // CIDR Reference Table
+        IconButton(
+          icon   : const Icon(Icons.table_chart_outlined),
+          tooltip: tr.translate('cidrReferenceTable'),
+          onPressed: () => showDialog(
+            context: context,
+            builder: (_) => const CidrLookupDialog(),
+          ),
+        ),
+        // Theme toggle
+        IconButton(
+          icon   : Icon(isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded),
+          tooltip: tr.translate('themeMode'),
+          onPressed: widget.onToggleTheme,
+        ),
+        // Locale toggle
+        IconButton(
+          icon   : const Icon(Icons.translate_rounded),
+          tooltip: tr.translate('language'),
+          onPressed: widget.onToggleLocale,
+        ),
+      ],
+    );
+  }
+
+  // ─── Feature Definitions ───────────────────────────────────────────
+  List<_FeatureItem> _buildFeatureList(
+    AppLocalizations tr,
+    AppThemeExtension ext,
+  ) {
+    return [
+      _FeatureItem(
+        title      : tr.translate('ciscoVlsm'),
+        description: tr.translate('ciscoVlsmDesc'),
+        icon       : Icons.architecture_rounded,
+        gradient   : ext.gradientVlsm,
+        heroTag    : 'hero-vlsm',
+        onTap      : () => _navigate(const CiscoVlsmPage()),
+      ),
+      _FeatureItem(
+        title      : tr.translate('ciscoCli'),
+        description: tr.translate('ciscoCliDesc'),
+        icon       : Icons.terminal_rounded,
+        gradient   : ext.gradientCli,
+        heroTag    : 'hero-cli',
+        onTap      : () => _navigate(const CiscoCliPage()),
+      ),
+      _FeatureItem(
+        title      : tr.translate('ipCalculator'),
+        description: tr.translate('ipCalculatorDesc'),
+        icon       : Icons.calculate_rounded,
+        gradient   : ext.gradientIpCalc,
+        heroTag    : 'hero-ip-calc',
+        onTap      : () => _navigate(
+          BlocProvider(
+            create: (_) => IpCalculatorCubit(IpCalculatorRepositoryImpl()),
+            child : const IpCalculatorPage(),
+          ),
+        ),
+      ),
+      _FeatureItem(
+        title      : tr.translate('subnetCalculator'),
+        description: tr.translate('subnetCalculatorDesc'),
+        icon       : Icons.alt_route_rounded,
+        gradient   : ext.gradientSubnet,
+        heroTag    : 'hero-subnet',
+        onTap      : () => _navigate(const SubnetCalculatorPage()),
+      ),
+      _FeatureItem(
+        title      : tr.translate('ipConverter'),
+        description: tr.translate('ipConverterDesc'),
+        icon       : Icons.swap_horiz_rounded,
+        gradient   : ext.gradientConverter,
+        heroTag    : 'hero-converter',
+        onTap      : () => _navigate(const IpConverterPage()),
+      ),
+      _FeatureItem(
+        title      : tr.translate('ipClassifier'),
+        description: tr.translate('ipClassifierDesc'),
+        icon       : Icons.category_rounded,
+        gradient   : ext.gradientClassifier,
+        heroTag    : 'hero-classifier',
+        onTap      : () => _navigate(const IpClassifierPage()),
+      ),
+      _FeatureItem(
+        title      : tr.translate('rangeCalculator'),
+        description: tr.translate('rangeCalculatorDesc'),
+        icon       : Icons.linear_scale_rounded,
+        gradient   : ext.gradientRange,
+        heroTag    : 'hero-range',
+        onTap      : () => _navigate(const RangeCalculatorPage()),
+      ),
+      _FeatureItem(
+        title      : tr.translate('history'),
+        description: tr.translate('historyDesc'),
+        icon       : Icons.history_rounded,
+        gradient   : ext.gradientHistory,
+        heroTag    : 'hero-history',
+        onTap      : () => _navigate(const HistoryPage()),
+      ),
+    ];
+  }
+}
+
+// ─── Data Model ──────────────────────────────────────────────────────────────
+
+class _FeatureItem {
+  final String title;
+  final String description;
+  final IconData icon;
+  final List<Color> gradient;
+  final String heroTag;
+  final VoidCallback onTap;
+
+  const _FeatureItem({
+    required this.title,
+    required this.description,
+    required this.icon,
+    required this.gradient,
+    required this.heroTag,
+    required this.onTap,
+  });
+}
+
+// ─── Section Header ──────────────────────────────────────────────────────────
+
+class _SectionHeader extends StatelessWidget {
+  final String label;
+  final int count;
+
+  const _SectionHeader({required this.label, required this.count});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.lg, AppSpacing.md, AppSpacing.lg, AppSpacing.sm,
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              label,
+              style: theme.textTheme.labelMedium?.copyWith(
+                color      : theme.colorScheme.onSurface.withValues(alpha: 0.5),
+                letterSpacing: 0.6,
+              ),
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.sm,
+              vertical  : 2,
+            ),
+            decoration: BoxDecoration(
+              color       : theme.colorScheme.primary.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
+            ),
+            child: Text(
+              '$count',
+              style: theme.textTheme.labelSmall?.copyWith(
+                color     : theme.colorScheme.primary,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
         ],
       ),
     );

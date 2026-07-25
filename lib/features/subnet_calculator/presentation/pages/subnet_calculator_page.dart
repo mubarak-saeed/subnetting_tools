@@ -15,7 +15,7 @@ class SubnetCalculatorPage extends StatefulWidget {
 }
 
 class _SubnetCalculatorPageState extends State<SubnetCalculatorPage> {
-  final _ipController = TextEditingController(text: '192.168.1.0');
+  final _ipController = TextEditingController(text: '176.123.31.150');
   int _subnetMask = 24;
   int _numberOfSubnets = 4;
   List<SubnetItem> _subnets = [];
@@ -227,9 +227,18 @@ class _SubnetCalculatorPageState extends State<SubnetCalculatorPage> {
                     itemCount: _subnets.length,
                     itemBuilder: (context, index) {
                       final subnet = _subnets[index];
+                      final isActive = subnet.isCurrentActive;
+
                       return Card(
-                        elevation: 1.5,
+                        elevation: isActive ? 4 : 1.5,
                         margin: const EdgeInsets.only(bottom: 10.0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          side: BorderSide(
+                            color: isActive ? theme.colorScheme.primary : Colors.transparent,
+                            width: isActive ? 2.0 : 0,
+                          ),
+                        ),
                         child: Padding(
                           padding: const EdgeInsets.all(14.0),
                           child: Column(
@@ -241,15 +250,17 @@ class _SubnetCalculatorPageState extends State<SubnetCalculatorPage> {
                                     width: 28,
                                     height: 28,
                                     decoration: BoxDecoration(
-                                      color: theme.colorScheme.primary.withValues(alpha: 0.15),
+                                      color: isActive ? theme.colorScheme.primary : theme.colorScheme.primary.withValues(alpha: 0.15),
                                       shape: BoxShape.circle,
                                     ),
                                     alignment: Alignment.center,
-                                    child: Text('${subnet.index}',
-                                        style: TextStyle(
-                                            color: theme.colorScheme.primary,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 12)),
+                                    child: Text(
+                                      '${subnet.index}',
+                                      style: TextStyle(
+                                          color: isActive ? Colors.white : theme.colorScheme.primary,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 12),
+                                    ),
                                   ),
                                   const SizedBox(width: 10),
                                   Expanded(
@@ -260,7 +271,23 @@ class _SubnetCalculatorPageState extends State<SubnetCalculatorPage> {
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
-                                  const SizedBox(width: 6),
+                                  if (isActive) ...[
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                      margin: const EdgeInsets.only(right: 6),
+                                      decoration: BoxDecoration(
+                                        color: theme.colorScheme.primary,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: const Text(
+                                        'Active IP',
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 10),
+                                      ),
+                                    ),
+                                  ],
                                   Container(
                                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                                     decoration: BoxDecoration(

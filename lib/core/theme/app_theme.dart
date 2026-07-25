@@ -1,191 +1,233 @@
 import 'package:flutter/material.dart';
+import 'app_text_theme.dart';
+import 'app_theme_extension.dart';
 
-/// Professional Theme System supporting Light and Dark modes with local Cairo font typography.
+/// Unified App Theme — Light & Dark Modes with Material 3 Design System.
+///
+/// Uses semantic color roles from [ColorScheme.fromSeed] and custom tokens
+/// from [AppThemeExtension]. All widget-level customization lives here.
 class AppTheme {
-  // Brand Color Palette
-  static const Color primaryIndigo = Color(0xFF4F46E5);
-  static const Color secondaryCyan = Color(0xFF06B6D4);
-  static const Color accentViolet = Color(0xFF8B5CF6);
+  AppTheme._(); // Prevents instantiation — all members are static.
 
-  static const Color darkBackground = Color(0xFF0F172A);
-  static const Color darkSurface = Color(0xFF1E293B);
-  static const Color darkSurfaceVariant = Color(0xFF334155);
+  // ─── Brand Seed Colors ────────────────────────────────────────────
+  static const Color _seedPrimary   = Color(0xFF4F46E5); // Indigo 600
+  static const Color _seedSecondary = Color(0xFF06B6D4); // Cyan 500
+  static const Color _seedTertiary  = Color(0xFF8B5CF6); // Violet 500
 
-  static const Color lightBackground = Color(0xFFF8FAFC);
-  static const Color lightSurface = Color(0xFFFFFFFF);
-  static const Color lightSurfaceVariant = Color(0xFFF1F5F9);
+  // ─── Surface Overrides ───────────────────────────────────────────
+  static const Color _lightBackground = Color(0xFFF8FAFC);
+  static const Color _lightSurface    = Color(0xFFFFFFFF);
+  static const Color _lightBorder     = Color(0xFFE2E8F0);
 
+  static const Color _darkBackground  = Color(0xFF090D16);
+  static const Color _darkSurface     = Color(0xFF111827);
+  static const Color _darkBorder      = Color(0xFF1F2937);
+
+  // ─── Light Theme ─────────────────────────────────────────────────
   static final ThemeData lightTheme = ThemeData(
-    useMaterial3: true,
-    fontFamily: 'Cairo',
-    brightness: Brightness.light,
-    scaffoldBackgroundColor: lightBackground,
-    primaryColor: primaryIndigo,
+    useMaterial3           : true,
+    fontFamily             : 'Cairo',
+    brightness             : Brightness.light,
+    scaffoldBackgroundColor: _lightBackground,
     colorScheme: ColorScheme.fromSeed(
-      seedColor: primaryIndigo,
-      brightness: Brightness.light,
-      primary: primaryIndigo,
-      secondary: secondaryCyan,
-      tertiary: accentViolet,
-      surface: lightSurface,
-      surfaceContainerHighest: lightSurfaceVariant,
+      seedColor  : _seedPrimary,
+      brightness : Brightness.light,
+      primary    : _seedPrimary,
+      secondary  : _seedSecondary,
+      tertiary   : _seedTertiary,
+      surface    : _lightSurface,
     ),
-    appBarTheme: const AppBarTheme(
-      centerTitle: true,
-      elevation: 0,
-      backgroundColor: lightBackground,
+    textTheme              : AppTextTheme.textTheme,
+    extensions             : const [AppThemeExtension.light],
+    appBarTheme: AppBarTheme(
+      centerTitle     : false,
+      elevation       : 0,
+      scrolledUnderElevation: 0,
+      backgroundColor : _lightBackground,
       surfaceTintColor: Colors.transparent,
-      titleTextStyle: TextStyle(
-        fontFamily: 'Cairo',
-        fontSize: 20,
-        fontWeight: FontWeight.bold,
-        color: Color(0xFF0F172A),
+      titleTextStyle  : AppTextTheme.textTheme.titleLarge?.copyWith(
+        color: const Color(0xFF0F172A),
       ),
-      iconTheme: IconThemeData(color: Color(0xFF0F172A)),
+      iconTheme: const IconThemeData(color: Color(0xFF0F172A)),
     ),
     cardTheme: CardThemeData(
-      elevation: 0,
+      elevation  : 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
-        side: const BorderSide(color: Color(0xFFE2E8F0), width: 1),
+        side: const BorderSide(color: _lightBorder),
       ),
-      color: lightSurface,
-      margin: EdgeInsets.zero,
+      color  : _lightSurface,
+      margin : EdgeInsets.zero,
+    ),
+    dividerTheme: const DividerThemeData(
+      color    : _lightBorder,
+      thickness: 1,
+      space    : 0,
     ),
     inputDecorationTheme: InputDecorationTheme(
-      filled: true,
-      fillColor: lightSurfaceVariant,
+      filled       : true,
+      fillColor    : const Color(0xFFF1F5F9),
       contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
-        borderSide: BorderSide.none,
+        borderSide  : BorderSide.none,
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
-        borderSide: const BorderSide(color: Color(0xFFE2E8F0), width: 1),
+        borderSide  : const BorderSide(color: _lightBorder),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
-        borderSide: const BorderSide(color: primaryIndigo, width: 2),
+        borderSide  : const BorderSide(color: _seedPrimary, width: 2),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
-        borderSide: const BorderSide(color: Colors.redAccent, width: 1.5),
+        borderSide  : const BorderSide(color: Color(0xFFEF4444), width: 1.5),
       ),
-      labelStyle: const TextStyle(fontFamily: 'Cairo', color: Color(0xFF475569), fontSize: 14),
-      hintStyle: const TextStyle(fontFamily: 'Cairo', color: Color(0xFF94A3B8), fontSize: 14),
+      labelStyle: AppTextTheme.textTheme.bodyMedium?.copyWith(color: const Color(0xFF475569)),
+      hintStyle : AppTextTheme.textTheme.bodyMedium?.copyWith(color: const Color(0xFF94A3B8)),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: primaryIndigo,
-        foregroundColor: Colors.white,
-        elevation: 2,
-        shadowColor: primaryIndigo.withValues(alpha: 0.4),
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        backgroundColor : _seedPrimary,
+        foregroundColor : Colors.white,
+        elevation       : 2,
+        shadowColor     : _seedPrimary.withValues(alpha: 0.35),
+        minimumSize     : const Size.fromHeight(52),
+        padding         : const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
-        textStyle: const TextStyle(
-          fontFamily: 'Cairo',
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-        ),
+        textStyle: AppTextTheme.textTheme.labelLarge?.copyWith(color: Colors.white),
       ),
     ),
+    chipTheme: ChipThemeData(
+      labelStyle : AppTextTheme.textTheme.labelMedium,
+      shape      : RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      padding    : const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+    ),
+    snackBarTheme: SnackBarThemeData(
+      behavior         : SnackBarBehavior.floating,
+      shape            : RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      backgroundColor  : const Color(0xFF1E293B),
+      contentTextStyle : AppTextTheme.textTheme.bodyMedium?.copyWith(color: Colors.white),
+    ),
     sliderTheme: SliderThemeData(
-      activeTrackColor: primaryIndigo,
-      inactiveTrackColor: primaryIndigo.withValues(alpha: 0.15),
-      thumbColor: primaryIndigo,
-      overlayColor: primaryIndigo.withValues(alpha: 0.15),
-      valueIndicatorColor: primaryIndigo,
-      valueIndicatorTextStyle: const TextStyle(fontFamily: 'Cairo', color: Colors.white, fontWeight: FontWeight.bold),
+      activeTrackColor          : _seedPrimary,
+      inactiveTrackColor        : _seedPrimary.withValues(alpha: 0.15),
+      thumbColor                : _seedPrimary,
+      overlayColor              : _seedPrimary.withValues(alpha: 0.12),
+      valueIndicatorColor       : _seedPrimary,
+      trackHeight               : 4,
+      valueIndicatorTextStyle   : AppTextTheme.textTheme.labelMedium?.copyWith(color: Colors.white),
+    ),
+    dialogTheme: DialogThemeData(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      elevation: 8,
     ),
   );
 
+  // ─── Dark Theme ──────────────────────────────────────────────────
   static final ThemeData darkTheme = ThemeData(
-    useMaterial3: true,
-    fontFamily: 'Cairo',
-    brightness: Brightness.dark,
-    scaffoldBackgroundColor: darkBackground,
-    primaryColor: primaryIndigo,
+    useMaterial3           : true,
+    fontFamily             : 'Cairo',
+    brightness             : Brightness.dark,
+    scaffoldBackgroundColor: _darkBackground,
     colorScheme: ColorScheme.fromSeed(
-      seedColor: primaryIndigo,
-      brightness: Brightness.dark,
-      primary: const Color(0xFF6366F1),
-      secondary: secondaryCyan,
-      tertiary: accentViolet,
-      surface: darkSurface,
-      surfaceContainerHighest: darkSurfaceVariant,
+      seedColor  : _seedPrimary,
+      brightness : Brightness.dark,
+      primary    : const Color(0xFF818CF8),
+      secondary  : _seedSecondary,
+      tertiary   : _seedTertiary,
+      surface    : _darkSurface,
     ),
-    appBarTheme: const AppBarTheme(
-      centerTitle: true,
-      elevation: 0,
-      backgroundColor: darkBackground,
+    textTheme              : AppTextTheme.textTheme,
+    extensions             : const [AppThemeExtension.dark],
+    appBarTheme: AppBarTheme(
+      centerTitle     : false,
+      elevation       : 0,
+      scrolledUnderElevation: 0,
+      backgroundColor : _darkBackground,
       surfaceTintColor: Colors.transparent,
-      titleTextStyle: TextStyle(
-        fontFamily: 'Cairo',
-        fontSize: 20,
-        fontWeight: FontWeight.bold,
+      titleTextStyle  : AppTextTheme.textTheme.titleLarge?.copyWith(
         color: Colors.white,
       ),
-      iconTheme: IconThemeData(color: Colors.white),
+      iconTheme: const IconThemeData(color: Colors.white),
     ),
     cardTheme: CardThemeData(
-      elevation: 0,
+      elevation  : 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
-        side: const BorderSide(color: Color(0xFF334155), width: 1),
+        side: const BorderSide(color: _darkBorder),
       ),
-      color: darkSurface,
-      margin: EdgeInsets.zero,
+      color  : _darkSurface,
+      margin : EdgeInsets.zero,
+    ),
+    dividerTheme: const DividerThemeData(
+      color    : _darkBorder,
+      thickness: 1,
+      space    : 0,
     ),
     inputDecorationTheme: InputDecorationTheme(
-      filled: true,
-      fillColor: darkSurfaceVariant.withValues(alpha: 0.6),
+      filled       : true,
+      fillColor    : const Color(0xFF1F2937),
       contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
-        borderSide: BorderSide.none,
+        borderSide  : BorderSide.none,
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
-        borderSide: const BorderSide(color: Color(0xFF334155), width: 1),
+        borderSide  : const BorderSide(color: _darkBorder),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
-        borderSide: const BorderSide(color: Color(0xFF6366F1), width: 2),
+        borderSide  : const BorderSide(color: Color(0xFF818CF8), width: 2),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
-        borderSide: const BorderSide(color: Colors.redAccent, width: 1.5),
+        borderSide  : const BorderSide(color: Color(0xFFF87171), width: 1.5),
       ),
-      labelStyle: const TextStyle(fontFamily: 'Cairo', color: Color(0xFF94A3B8), fontSize: 14),
-      hintStyle: const TextStyle(fontFamily: 'Cairo', color: Color(0xFF64748B), fontSize: 14),
+      labelStyle: AppTextTheme.textTheme.bodyMedium?.copyWith(color: const Color(0xFF94A3B8)),
+      hintStyle : AppTextTheme.textTheme.bodyMedium?.copyWith(color: const Color(0xFF4B5563)),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xFF6366F1),
-        foregroundColor: Colors.white,
-        elevation: 4,
-        shadowColor: const Color(0xFF6366F1).withValues(alpha: 0.5),
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        backgroundColor : const Color(0xFF818CF8),
+        foregroundColor : Colors.white,
+        elevation       : 4,
+        shadowColor     : const Color(0xFF818CF8).withValues(alpha: 0.4),
+        minimumSize     : const Size.fromHeight(52),
+        padding         : const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
-        textStyle: const TextStyle(
-          fontFamily: 'Cairo',
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-        ),
+        textStyle: AppTextTheme.textTheme.labelLarge?.copyWith(color: Colors.white),
       ),
     ),
+    chipTheme: ChipThemeData(
+      labelStyle : AppTextTheme.textTheme.labelMedium,
+      shape      : RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      padding    : const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+    ),
+    snackBarTheme: SnackBarThemeData(
+      behavior         : SnackBarBehavior.floating,
+      shape            : RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      backgroundColor  : const Color(0xFF1E293B),
+      contentTextStyle : AppTextTheme.textTheme.bodyMedium?.copyWith(color: Colors.white),
+    ),
     sliderTheme: SliderThemeData(
-      activeTrackColor: const Color(0xFF6366F1),
-      inactiveTrackColor: const Color(0xFF6366F1).withValues(alpha: 0.2),
-      thumbColor: const Color(0xFF6366F1),
-      overlayColor: const Color(0xFF6366F1).withValues(alpha: 0.2),
-      valueIndicatorColor: const Color(0xFF6366F1),
-      valueIndicatorTextStyle: const TextStyle(fontFamily: 'Cairo', color: Colors.white, fontWeight: FontWeight.bold),
+      activeTrackColor          : const Color(0xFF818CF8),
+      inactiveTrackColor        : const Color(0xFF818CF8).withValues(alpha: 0.2),
+      thumbColor                : const Color(0xFF818CF8),
+      overlayColor              : const Color(0xFF818CF8).withValues(alpha: 0.15),
+      valueIndicatorColor       : const Color(0xFF818CF8),
+      trackHeight               : 4,
+      valueIndicatorTextStyle   : AppTextTheme.textTheme.labelMedium?.copyWith(color: Colors.white),
+    ),
+    dialogTheme: DialogThemeData(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      elevation: 8,
     ),
   );
 }

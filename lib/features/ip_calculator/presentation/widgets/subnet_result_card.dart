@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/ip_address.dart';
 
+/// Displays sibling subnets for the IP's parent network.
+///
+/// Each subnet item shows CIDR, usable hosts, network, broadcast, and host range.
 class SubnetResultCard extends StatelessWidget {
   final IpAddress ipAddress;
 
@@ -9,76 +13,130 @@ class SubnetResultCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tr = AppLocalizations.of(context);
+    final tr    = AppLocalizations.of(context);
     final theme = Theme.of(context);
 
     if (ipAddress.subnets.isEmpty) return const SizedBox();
 
     return Card(
-      elevation: 2,
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(AppSpacing.cardPadding),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              tr.translate('subnets'),
-              style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color       : theme.colorScheme.secondary.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(8),
                   ),
+                  child: Icon(
+                    Icons.alt_route_rounded,
+                    size : AppSpacing.iconSm,
+                    color: theme.colorScheme.secondary,
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Text(
+                  '${tr.translate("subnets")} (${ipAddress.subnets.length})',
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    color     : theme.colorScheme.secondary,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 8),
-            ListView.builder(
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: AppSpacing.sm),
+              child  : Divider(height: 1),
+            ),
+            ListView.separated(
               shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: ipAddress.subnets.length,
+              physics   : const NeverScrollableScrollPhysics(),
+              itemCount : ipAddress.subnets.length,
+              separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.sm),
               itemBuilder: (context, index) {
                 final item = ipAddress.subnets[index];
                 return Container(
-                  margin: const EdgeInsets.only(bottom: 8.0),
-                  padding: const EdgeInsets.all(12.0),
+                  padding: const EdgeInsets.all(AppSpacing.md),
                   decoration: BoxDecoration(
-                    color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-                    borderRadius: BorderRadius.circular(12),
+                    color       : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.4),
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                    border      : Border.all(
+                      color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5),
+                    ),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      // Subnet header
                       Row(
                         children: [
+                          Container(
+                            width : 24,
+                            height: 24,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: theme.colorScheme.primary.withValues(alpha: 0.12),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Text(
+                              '${item.index}',
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                color     : theme.colorScheme.primary,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: AppSpacing.sm),
                           Expanded(
                             child: Text(
-                              '${tr.translate('subnet')} ${item.index}: ${item.cidrNotation}',
-                              style: const TextStyle(fontWeight: FontWeight.bold),
+                              item.cidrNotation,
+                              style   : theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                          const SizedBox(width: 8),
+                          const SizedBox(width: AppSpacing.xs),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                             decoration: BoxDecoration(
-                              color: theme.colorScheme.primary.withValues(alpha: 0.15),
-                              borderRadius: BorderRadius.circular(8),
+                              color       : theme.colorScheme.primary.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
                             ),
                             child: Text(
-                              '${item.usableHosts} ${tr.translate('usableHosts')}',
-                              style: TextStyle(
-                                color: theme.colorScheme.primary,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 11,
+                              '${item.usableHosts}h',
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                color     : theme.colorScheme.primary,
+                                fontWeight: FontWeight.w700,
                               ),
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 6),
-                      Text(
-                        '${tr.translate('networkAddress')}: ${item.networkAddress} | ${tr.translate('broadcastAddress')}: ${item.broadcastAddress}',
-                        style: const TextStyle(fontSize: 11),
+                      const SizedBox(height: AppSpacing.sm),
+                      // Network / Broadcast row
+                      Row(
+                        children: [
+                          _SubnetDetail(
+                            label: tr.translate('networkAddress'),
+                            value: item.networkAddress,
+                          ),
+                          const SizedBox(width: AppSpacing.sm),
+                          _SubnetDetail(
+                            label: tr.translate('broadcastAddress'),
+                            value: item.broadcastAddress,
+                          ),
+                        ],
                       ),
+                      const SizedBox(height: AppSpacing.xs),
+                      // Host range
                       Text(
-                        '${tr.translate('firstUsableIp')}: ${item.firstUsableIp} - ${tr.translate('lastUsableIp')}: ${item.lastUsableIp}',
-                        style: TextStyle(fontSize: 11, color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.8)),
+                        '${item.firstUsableIp} — ${item.lastUsableIp}',
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: theme.colorScheme.onSurface.withValues(alpha: 0.55),
+                        ),
                       ),
                     ],
                   ),
@@ -87,6 +145,36 @@ class SubnetResultCard extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _SubnetDetail extends StatelessWidget {
+  final String label;
+  final String value;
+
+  const _SubnetDetail({required this.label, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.45),
+            ),
+          ),
+          Text(
+            value,
+            style   : theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w700),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
       ),
     );
   }

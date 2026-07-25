@@ -1,6 +1,6 @@
 import 'dart:math';
 
-/// Unified model representing calculated IP network details
+/// Unified model representing calculated IPv4 network details
 class IpNetworkDetails {
   final String ipAddress;
   final int cidr;
@@ -17,6 +17,11 @@ class IpNetworkDetails {
   final String ipTypeDescription;
   final String binaryIp;
   final String binaryNetmask;
+  final int integerId;
+  final String hexId;
+  final String inAddrArpa;
+  final String ipv4MappedIpv6;
+  final String sixToFourPrefix;
 
   const IpNetworkDetails({
     required this.ipAddress,
@@ -34,6 +39,11 @@ class IpNetworkDetails {
     required this.ipTypeDescription,
     required this.binaryIp,
     required this.binaryNetmask,
+    required this.integerId,
+    required this.hexId,
+    required this.inAddrArpa,
+    required this.ipv4MappedIpv6,
+    required this.sixToFourPrefix,
   });
 }
 
@@ -46,6 +56,7 @@ class SubnetItem {
   final String firstUsableIp;
   final String lastUsableIp;
   final int usableHosts;
+  final bool isCurrentActive;
 
   const SubnetItem({
     required this.index,
@@ -55,6 +66,7 @@ class SubnetItem {
     required this.firstUsableIp,
     required this.lastUsableIp,
     required this.usableHosts,
+    this.isCurrentActive = false,
   });
 }
 
@@ -99,7 +111,6 @@ class IpNetworkEngine {
   static int? maskToCidr(String mask) {
     if (!isValidIp(mask)) return null;
     final maskInt = ipToInt(mask);
-    // Mask must be consecutive 1s followed by 0s
     final binaryStr = maskInt.toRadixString(2).padLeft(32, '0');
     final match = RegExp(r'^(1*)(0*)$').firstMatch(binaryStr);
     if (match == null) return null;
@@ -118,7 +129,7 @@ class IpNetworkEngine {
     return parts.map((octet) => octet.toRadixString(16).padLeft(2, '0').toUpperCase()).join('.');
   }
 
-  /// Converts binary IP string (8.8.8.8 bits) back to dotted decimal IP
+  /// Converts 32-bit binary IP string back to dotted decimal IPv4
   static String binaryToDecimalIp(String binaryStr) {
     final cleanStr = binaryStr.replaceAll(' ', '');
     final parts = cleanStr.contains('.') ? cleanStr.split('.') : [
@@ -131,9 +142,9 @@ class IpNetworkEngine {
     return parts.map((part) => int.parse(part, radix: 2).toString()).join('.');
   }
 
-  /// Converts Hex IP string (XX.XX.XX.XX) back to dotted decimal IP
+  /// Converts Hex IP string (XX.XX.XX.XX or 0xXXXXXXXX) back to dotted decimal IPv4
   static String hexToDecimalIp(String hexStr) {
-    final cleanStr = hexStr.replaceAll(' ', '').replaceAll('0x', '');
+    final cleanStr = hexStr.replaceAll(' ', '').replaceAll('0x', '').replaceAll('0X', '');
     final parts = cleanStr.contains('.') ? cleanStr.split('.') : [
       if (cleanStr.length >= 2) cleanStr.substring(0, 2),
       if (cleanStr.length >= 4) cleanStr.substring(2, 4),
@@ -142,6 +153,31 @@ class IpNetworkEngine {
     ];
     if (parts.length != 4) throw ArgumentError('Invalid hex IP format');
     return parts.map((part) => int.parse(part, radix: 16).toString()).join('.');
+  }
+
+  /// Calculates Reverse DNS PTR record in-addr.arpa
+  static String getInAddrArpa(String ip) {
+    final parts = ip.trim().split('.');
+    if (parts.length != 4) return '';
+    return '${parts[3]}.${parts[2]}.${parts[1]}.${parts[0]}.in-addr.arpa';
+  }
+
+  /// Calculates IPv4 Mapped IPv6 Address (::ffff:192.168.1.1 or ::ffff:c0a8.0101)
+  static String getIpv4MappedIpv6(String ip) {
+    final parts = ip.trim().split('.').map(int.parse).toList();
+    if (parts.length != 4) return '';
+    final h1 = ((parts[0] << 8) | parts[1]).toRadixString(16).padLeft(4, '0');
+    final h2 = ((parts[2] << 8) | parts[3]).toRadixString(16).padLeft(4, '0');
+    return '::ffff:$h1.$h2';
+  }
+
+  /// Calculates 6to4 Prefix
+  static String get6to4Prefix(String ip) {
+    final parts = ip.trim().split('.').map(int.parse).toList();
+    if (parts.length != 4) return '';
+    final h1 = ((parts[0] << 8) | parts[1]).toRadixString(16).padLeft(4, '0');
+    final h2 = ((parts[2] << 8) | parts[3]).toRadixString(16).padLeft(4, '0');
+    return '2002:$h1:$h2::/48';
   }
 
   /// Classifies IPv4 class (A, B, C, D, E)
@@ -160,15 +196,10 @@ class IpNetworkEngine {
     final oct1 = parts[0];
     final oct2 = parts[1];
 
-    // 10.0.0.0/8
     if (oct1 == 10) return true;
-    // 172.16.0.0/12
     if (oct1 == 172 && oct2 >= 16 && oct2 <= 31) return true;
-    // 192.168.0.0/16
     if (oct1 == 192 && oct2 == 168) return true;
-    // 127.0.0.0/8 Loopback
     if (oct1 == 127) return true;
-    // 169.254.0.0/16 Link-Local
     if (oct1 == 169 && oct2 == 254) return true;
 
     return false;
@@ -214,7 +245,6 @@ class IpNetworkEngine {
       firstUsableInt = networkInt;
       lastUsableInt = networkInt;
     } else if (cidr == 31) {
-      // RFC 3021: /31 for point-to-point links uses both addresses as usable
       usableHosts = 2;
       firstUsableInt = networkInt;
       lastUsableInt = broadcastInt;
@@ -242,11 +272,15 @@ class IpNetworkEngine {
       ipTypeDescription: getIpTypeDescription(ip),
       binaryIp: toBinaryString(ip),
       binaryNetmask: toBinaryString(intToIp(maskInt)),
+      integerId: ipInt,
+      hexId: '0x${ipInt.toRadixString(16).padLeft(8, '0').toLowerCase()}',
+      inAddrArpa: getInAddrArpa(ip),
+      ipv4MappedIpv6: getIpv4MappedIpv6(ip),
+      sixToFourPrefix: get6to4Prefix(ip),
     );
   }
 
   /// Calculates CIDR subnets by splitting a base network into 2^bits subnets.
-  /// [targetSubnetsCount] will be rounded up to the next power of 2.
   static List<SubnetItem> calculateSubnets({
     required String baseIp,
     required int baseCidr,
@@ -255,19 +289,19 @@ class IpNetworkEngine {
     if (targetSubnetsCount < 1) return [];
     if (baseCidr < 0 || baseCidr >= 32) return [];
 
-    // Calculate required additional bits to borrow
     int bitsNeeded = 0;
     while ((1 << bitsNeeded) < targetSubnetsCount) {
       bitsNeeded++;
     }
 
     final newCidr = baseCidr + bitsNeeded;
-    if (newCidr > 32) return []; // Cannot subdivide further
+    if (newCidr > 32) return [];
 
     final actualSubnetsCount = 1 << bitsNeeded;
     final subnetSize = 1 << (32 - newCidr);
 
-    final baseNetworkInt = ipToInt(baseIp) & cidrToMaskInt(baseCidr);
+    final baseIpInt = isValidIp(baseIp) ? ipToInt(baseIp) : 0;
+    final baseNetworkInt = baseIpInt & cidrToMaskInt(baseCidr);
     final results = <SubnetItem>[];
 
     for (int i = 0; i < actualSubnetsCount; i++) {
@@ -275,6 +309,8 @@ class IpNetworkEngine {
       final subNetmaskInt = cidrToMaskInt(newCidr);
       final subWildcardInt = (~subNetmaskInt) & 0xFFFFFFFF;
       final subBroadcastInt = subNetworkInt | subWildcardInt;
+
+      final isCurrent = baseIpInt >= subNetworkInt && baseIpInt <= subBroadcastInt;
 
       int usableHosts;
       int firstUsableInt;
@@ -302,6 +338,7 @@ class IpNetworkEngine {
         firstUsableIp: intToIp(firstUsableInt),
         lastUsableIp: intToIp(lastUsableInt),
         usableHosts: usableHosts,
+        isCurrentActive: isCurrent,
       ));
     }
 

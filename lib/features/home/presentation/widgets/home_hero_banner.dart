@@ -1,18 +1,26 @@
 import 'package:flutter/material.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../../../l10n/app_localizations.dart';
 
-/// Interactive Hero Banner displaying the app title, badge, and description on the dashboard.
+/// Hero Banner widget displayed at the top of the dashboard.
+///
+/// Shows app title, subtitle, tool count badge, and a decorative network icon.
+/// Uses Hero animation tag 'hero-banner-icon' for shared element transitions.
 class HomeHeroBanner extends StatelessWidget {
-  const HomeHeroBanner({super.key});
+  final int toolCount;
+
+  const HomeHeroBanner({super.key, this.toolCount = 8});
 
   @override
   Widget build(BuildContext context) {
-    final tr = AppLocalizations.of(context);
+    final tr    = AppLocalizations.of(context);
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     return Container(
-      margin: const EdgeInsets.all(16.0),
-      padding: const EdgeInsets.all(20.0),
+      margin : const EdgeInsets.fromLTRB(
+        AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, AppSpacing.sm,
+      ),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
@@ -20,56 +28,129 @@ class HomeHeroBanner extends StatelessWidget {
             theme.colorScheme.tertiary,
           ],
           begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+          end  : Alignment.bottomRight,
+          stops: const [0.0, 1.0],
         ),
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusXl2),
         boxShadow: [
           BoxShadow(
-            color: theme.colorScheme.primary.withValues(alpha: 0.35),
-            blurRadius: 16,
-            offset: const Offset(0, 8),
+            color     : theme.colorScheme.primary.withValues(alpha: isDark ? 0.45 : 0.30),
+            blurRadius: 24,
+            offset    : const Offset(0, 10),
           ),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Stack(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.25),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: const Text(
-                  'Network Engineering Toolkit',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                  ),
+          // Decorative background circle
+          Positioned(
+            right : -20,
+            top   : -20,
+            child : Opacity(
+              opacity: 0.08,
+              child: Container(
+                width : 140,
+                height: 140,
+                decoration: const BoxDecoration(
+                  color : Colors.white,
+                  shape : BoxShape.circle,
                 ),
               ),
-              const Icon(Icons.workspace_premium, color: Colors.amberAccent, size: 24),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Text(
-            tr.translate('appTitle'),
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 4),
+          Positioned(
+            right: 20,
+            bottom: -30,
+            child: Opacity(
+              opacity: 0.06,
+              child: Container(
+                width : 100,
+                height: 100,
+                decoration: const BoxDecoration(
+                  color : Colors.white,
+                  shape : BoxShape.circle,
+                ),
+              ),
+            ),
+          ),
+          // Content
+          Padding(
+            padding: const EdgeInsets.all(AppSpacing.xl),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Badge row
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _Badge(
+                      label: tr.translate('badgeToolkit'),
+                      icon : Icons.lan_outlined,
+                    ),
+                    _Badge(
+                      label: '$toolCount ${tr.translate("toolsCount")}',
+                      icon : Icons.widgets_outlined,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppSpacing.md),
+                // Title
+                Text(
+                  tr.translate('appTitle'),
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    color     : Colors.white,
+                    fontWeight: FontWeight.w800,
+                    height    : 1.2,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xs),
+                // Subtitle
+                Text(
+                  tr.translate('appSubtitle'),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color  : Colors.white.withValues(alpha: 0.82),
+                    height : 1.5,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Internal badge chip for the hero banner.
+class _Badge extends StatelessWidget {
+  final String label;
+  final IconData icon;
+
+  const _Badge({required this.label, required this.icon});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical  : AppSpacing.xs,
+      ),
+      decoration: BoxDecoration(
+        color       : Colors.white.withValues(alpha: 0.18),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
+        border      : Border.all(color: Colors.white.withValues(alpha: 0.25)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, color: Colors.white, size: AppSpacing.iconSm),
+          const SizedBox(width: AppSpacing.xs),
           Text(
-            tr.translate('appSubtitle'),
-            style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.85),
-              fontSize: 13,
+            label,
+            style: const TextStyle(
+              color     : Colors.white,
+              fontSize  : 11,
+              fontWeight: FontWeight.w700,
             ),
           ),
         ],
