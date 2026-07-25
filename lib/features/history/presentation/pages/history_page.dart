@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import '../../../../core/network/ip_network_engine.dart';
+import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/utils/page_routes.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../ip_calculator/data/repositories/ip_calculator_repository_impl.dart';
+import '../../../ip_calculator/presentation/pages/ip_details_page.dart';
 import '../../logic/favorites_storage.dart';
 import '../../logic/history_storage.dart';
 
@@ -12,9 +17,9 @@ class HistoryPage extends StatefulWidget {
 
 class _HistoryPageState extends State<HistoryPage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  List<HistoryEntry> _history = [];
+  List<HistoryEntry> _history   = [];
   List<HistoryEntry> _favorites = [];
-  bool _loading = true;
+  bool _loading     = true;
   String _searchQuery = '';
 
   @override
@@ -24,86 +29,112 @@ class _HistoryPageState extends State<HistoryPage> with SingleTickerProviderStat
     _loadData();
   }
 
+  Future<void> _loadData() async {
+    final h = await HistoryStorage.getHistoryEntries();
+    final f = await FavoritesStorage.getFavorites();
+    if (mounted) {
+      setState(() {
+        _history   = h;
+        _favorites = f;
+        _loading   = false;
+      });
+    }
+  }
+
+  Future<void> _toggleFav(HistoryEntry entry) async {
+    await FavoritesStorage.toggleFavorite(entry);
+    _loadData();
+  }
+
+  Future<void> _deleteEntry(int index) async {
+    await HistoryStorage.deleteHistoryEntryAt(index);
+    _loadData();
+  }
+
+  Future<void> _clearHistory() async {
+    await HistoryStorage.clearHistory();
+    _loadData();
+  }
+
   @override
   void dispose() {
     _tabController.dispose();
     super.dispose();
   }
 
-  Future<void> _loadData() async {
-    setState(() => _loading = true);
-    final history = await HistoryStorage.getHistoryEntries();
-    final favorites = await FavoritesStorage.getFavorites();
-    setState(() {
-      _history = history;
-      _favorites = favorites;
-      _loading = false;
-    });
-  }
-
-  Future<void> _clearHistory() async {
-    await HistoryStorage.clearHistory();
-    await _loadData();
-  }
-
-  Future<void> _deleteEntry(int index) async {
-    await HistoryStorage.deleteHistoryEntryAt(index);
-    await _loadData();
-  }
-
-  Future<void> _toggleFav(HistoryEntry entry) async {
-    await FavoritesStorage.toggleFavorite(entry);
-    await _loadData();
-  }
-
   @override
   Widget build(BuildContext context) {
-    final tr = AppLocalizations.of(context);
+    final tr    = AppLocalizations.of(context);
+    final theme = Theme.of(context);
 
     final filteredHistory = _history.where((e) {
       final q = _searchQuery.toLowerCase();
       return e.title.toLowerCase().contains(q) ||
-          e.details.toLowerCase().contains(q) ||
-          e.featureType.toLowerCase().contains(q);
+          e.featureType.toLowerCase().contains(q) ||
+          e.details.toLowerCase().contains(q);
     }).toList();
 
     final filteredFavorites = _favorites.where((e) {
       final q = _searchQuery.toLowerCase();
       return e.title.toLowerCase().contains(q) ||
-          e.details.toLowerCase().contains(q) ||
-          e.featureType.toLowerCase().contains(q);
+          e.featureType.toLowerCase().contains(q) ||
+          e.details.toLowerCase().contains(q);
     }).toList();
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(tr.translate('history')),
+        title: Text(tr.translate('historyAndFavorites')),
         actions: [
           IconButton(
-            icon: const Icon(Icons.delete_sweep),
+            icon: const Icon(Icons.delete_sweep_rounded),
             tooltip: tr.translate('clearHistory'),
-            onPressed: _history.isEmpty ? null : _clearHistory,
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (_) => AlertDialog(
+                  title: Text(tr.translate('clearHistory')),
+                  content: Text(tr.translate('confirmClearHistory')),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text(tr.translate('cancel')),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        _clearHistory();
+                      },
+                      child: Text(
+                        tr.translate('clear'),
+                        style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
           ),
         ],
         bottom: TabBar(
           controller: _tabController,
           tabs: [
-            Tab(text: tr.translate('history'), icon: const Icon(Icons.history, size: 20)),
-            const Tab(text: 'Favorites', icon: Icon(Icons.star, size: 20, color: Colors.amber)),
+            Tab(icon: const Icon(Icons.history_rounded), text: tr.translate('history')),
+            Tab(icon: const Icon(Icons.star_rounded), text: tr.translate('starredTab')),
           ],
         ),
       ),
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(12.0),
+            padding: const EdgeInsets.all(AppSpacing.lg),
             child: TextField(
               onChanged: (val) => setState(() => _searchQuery = val),
               decoration: InputDecoration(
-                hintText: tr.translate('chooseFeature'),
-                prefixIcon: const Icon(Icons.search),
+                hintText: tr.translate('searchHint'),
+                prefixIcon: const Icon(Icons.search_rounded),
                 suffixIcon: _searchQuery.isNotEmpty
                     ? IconButton(
-                        icon: const Icon(Icons.clear),
+                        icon: const Icon(Icons.clear_rounded),
                         onPressed: () => setState(() => _searchQuery = ''),
                       )
                     : null,
@@ -127,77 +158,120 @@ class _HistoryPageState extends State<HistoryPage> with SingleTickerProviderStat
   }
 
   Widget _buildList(List<HistoryEntry> list, {required bool isFavTab, required AppLocalizations tr}) {
+    final theme = Theme.of(context);
+
     if (list.isEmpty) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              isFavTab ? Icons.star_border : Icons.history_toggle_off,
+              isFavTab ? Icons.star_border_rounded : Icons.history_toggle_off_rounded,
               size: 64,
-              color: Colors.grey.shade400,
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.3),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.md),
             Text(
               isFavTab ? 'No starred calculations saved.' : tr.translate('noHistory'),
-              style: TextStyle(color: Colors.grey.shade600, fontSize: 14),
+              style: TextStyle(color: theme.colorScheme.onSurface.withValues(alpha: 0.55), fontSize: 14),
             ),
           ],
         ),
       );
     }
 
-    return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
+    return ListView.separated(
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.xs),
       itemCount: list.length,
+      separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.xs),
       itemBuilder: (context, i) {
-        final item = list[i];
+        final item  = list[i];
         final isFav = _favorites.any((f) => f.title == item.title && f.featureType == item.featureType);
 
         return Card(
-          elevation: 2,
-          margin: const EdgeInsets.only(bottom: 8.0),
           child: ExpansionTile(
-            leading: Chip(
-              label: Text(
+            leading: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.primary.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+              ),
+              child: Text(
                 item.featureType,
-                style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  color: theme.colorScheme.primary,
+                  fontSize: 10,
+                  fontWeight: FontWeight.w800,
+                ),
               ),
             ),
             title: Text(
               item.title,
-              style: const TextStyle(fontWeight: FontWeight.bold),
+              style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w800),
             ),
             subtitle: Text(
               _formatTime(item.timestamp),
-              style: const TextStyle(fontSize: 11),
+              style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.55)),
             ),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 IconButton(
                   icon: Icon(
-                    isFav ? Icons.star : Icons.star_border,
-                    color: isFav ? Colors.amber : Colors.grey,
+                    isFav ? Icons.star_rounded : Icons.star_border_rounded,
+                    color: isFav ? Colors.amber : theme.colorScheme.onSurface.withValues(alpha: 0.4),
                   ),
                   onPressed: () => _toggleFav(item),
                 ),
                 if (!isFavTab)
                   IconButton(
-                    icon: const Icon(Icons.delete_outline, size: 20),
+                    icon: Icon(Icons.delete_outline_rounded, size: 20, color: theme.colorScheme.error),
                     onPressed: () => _deleteEntry(i),
                   ),
               ],
             ),
             children: [
               Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: SelectableText(
-                    item.details,
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
+                padding: const EdgeInsets.all(AppSpacing.md),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(AppSpacing.sm),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.35),
+                        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                      ),
+                      child: SelectableText(
+                        item.details,
+                        style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        final match = RegExp(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})(?:/(\d{1,2}))?').firstMatch(item.title);
+                        final ip   = match?.group(1) ?? '192.168.1.1';
+                        final cidr = int.tryParse(match?.group(2) ?? '') ?? 24;
+
+                        if (IpNetworkEngine.isValidIp(ip)) {
+                          final ipAddress = IpCalculatorRepositoryImpl().calculateAll(ip, cidr);
+                          Navigator.push(
+                            context,
+                            AppPageRoutes.fadeSlide(IpDetailsPage(ipAddress: ipAddress)),
+                          );
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      icon: const Icon(Icons.analytics_outlined, size: 16),
+                      label: Text(tr.translate('viewFullDetails'), style: const TextStyle(fontSize: 12)),
+                    ),
+                  ],
                 ),
               ),
             ],

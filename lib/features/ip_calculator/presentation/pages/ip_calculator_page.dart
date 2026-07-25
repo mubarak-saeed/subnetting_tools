@@ -1,8 +1,7 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/network/ip_network_engine.dart';
+import '../../../../core/utils/page_routes.dart';
 import '../../../../core/widgets/cidr_selector_chips.dart';
 import '../../../../core/widgets/ip_input_field.dart';
 import '../../../../core/widgets/quick_preset_chips.dart';
@@ -10,6 +9,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../cubit/ip_calculator_cubit.dart';
 import '../widgets/ip_result_card.dart';
 import '../widgets/subnet_result_card.dart';
+import 'ip_details_page.dart';
 
 class IpCalculatorPage extends StatefulWidget {
   const IpCalculatorPage({super.key});
@@ -191,6 +191,23 @@ class _IpCalculatorPageState extends State<IpCalculatorPage> {
                 } else if (state is IpCalculatorSuccess) {
                   return Column(
                     children: [
+                      OutlinedButton.icon(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            AppPageRoutes.fadeSlide(
+                              IpDetailsPage(ipAddress: state.ipAddress),
+                            ),
+                          );
+                        },
+                        style: OutlinedButton.styleFrom(
+                          minimumSize: const Size.fromHeight(48),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                        ),
+                        icon: const Icon(Icons.fullscreen_rounded),
+                        label: Text(tr.translate('viewFullDetails')),
+                      ),
+                      const SizedBox(height: 12),
                       IpResultCard(ipAddress: state.ipAddress),
                       const SizedBox(height: 16),
                       SubnetResultCard(ipAddress: state.ipAddress),

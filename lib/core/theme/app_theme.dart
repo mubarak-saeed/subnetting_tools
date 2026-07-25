@@ -37,7 +37,7 @@ class AppTheme {
       tertiary   : _seedTertiary,
       surface    : _lightSurface,
     ),
-    textTheme              : AppTextTheme.textTheme,
+    textTheme              : AppTextTheme.lightTextTheme,
     extensions             : const [AppThemeExtension.light],
     appBarTheme: AppBarTheme(
       centerTitle     : false,
@@ -45,7 +45,7 @@ class AppTheme {
       scrolledUnderElevation: 0,
       backgroundColor : _lightBackground,
       surfaceTintColor: Colors.transparent,
-      titleTextStyle  : AppTextTheme.textTheme.titleLarge?.copyWith(
+      titleTextStyle  : AppTextTheme.lightTextTheme.titleLarge?.copyWith(
         color: const Color(0xFF0F172A),
       ),
       iconTheme: const IconThemeData(color: Color(0xFF0F172A)),
@@ -84,8 +84,8 @@ class AppTheme {
         borderRadius: BorderRadius.circular(16),
         borderSide  : const BorderSide(color: Color(0xFFEF4444), width: 1.5),
       ),
-      labelStyle: AppTextTheme.textTheme.bodyMedium?.copyWith(color: const Color(0xFF475569)),
-      hintStyle : AppTextTheme.textTheme.bodyMedium?.copyWith(color: const Color(0xFF94A3B8)),
+      labelStyle: AppTextTheme.lightTextTheme.bodyMedium?.copyWith(color: const Color(0xFF475569)),
+      hintStyle : AppTextTheme.lightTextTheme.bodyMedium?.copyWith(color: const Color(0xFF94A3B8)),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
@@ -98,11 +98,11 @@ class AppTheme {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
-        textStyle: AppTextTheme.textTheme.labelLarge?.copyWith(color: Colors.white),
+        textStyle: AppTextTheme.lightTextTheme.labelLarge?.copyWith(color: Colors.white),
       ),
     ),
     chipTheme: ChipThemeData(
-      labelStyle : AppTextTheme.textTheme.labelMedium,
+      labelStyle : AppTextTheme.lightTextTheme.labelMedium,
       shape      : RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       padding    : const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
     ),
@@ -110,7 +110,7 @@ class AppTheme {
       behavior         : SnackBarBehavior.floating,
       shape            : RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       backgroundColor  : const Color(0xFF1E293B),
-      contentTextStyle : AppTextTheme.textTheme.bodyMedium?.copyWith(color: Colors.white),
+      contentTextStyle : AppTextTheme.lightTextTheme.bodyMedium?.copyWith(color: Colors.white),
     ),
     sliderTheme: SliderThemeData(
       activeTrackColor          : _seedPrimary,
@@ -119,7 +119,7 @@ class AppTheme {
       overlayColor              : _seedPrimary.withValues(alpha: 0.12),
       valueIndicatorColor       : _seedPrimary,
       trackHeight               : 4,
-      valueIndicatorTextStyle   : AppTextTheme.textTheme.labelMedium?.copyWith(color: Colors.white),
+      valueIndicatorTextStyle   : AppTextTheme.lightTextTheme.labelMedium?.copyWith(color: Colors.white),
     ),
     dialogTheme: DialogThemeData(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
@@ -141,7 +141,7 @@ class AppTheme {
       tertiary   : _seedTertiary,
       surface    : _darkSurface,
     ),
-    textTheme              : AppTextTheme.textTheme,
+    textTheme              : AppTextTheme.darkTextTheme,
     extensions             : const [AppThemeExtension.dark],
     appBarTheme: AppBarTheme(
       centerTitle     : false,
@@ -149,7 +149,7 @@ class AppTheme {
       scrolledUnderElevation: 0,
       backgroundColor : _darkBackground,
       surfaceTintColor: Colors.transparent,
-      titleTextStyle  : AppTextTheme.textTheme.titleLarge?.copyWith(
+      titleTextStyle  : AppTextTheme.darkTextTheme.titleLarge?.copyWith(
         color: Colors.white,
       ),
       iconTheme: const IconThemeData(color: Colors.white),
@@ -188,8 +188,8 @@ class AppTheme {
         borderRadius: BorderRadius.circular(16),
         borderSide  : const BorderSide(color: Color(0xFFF87171), width: 1.5),
       ),
-      labelStyle: AppTextTheme.textTheme.bodyMedium?.copyWith(color: const Color(0xFF94A3B8)),
-      hintStyle : AppTextTheme.textTheme.bodyMedium?.copyWith(color: const Color(0xFF4B5563)),
+      labelStyle: AppTextTheme.darkTextTheme.bodyMedium?.copyWith(color: const Color(0xFF94A3B8)),
+      hintStyle : AppTextTheme.darkTextTheme.bodyMedium?.copyWith(color: const Color(0xFF4B5563)),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
@@ -202,11 +202,11 @@ class AppTheme {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
-        textStyle: AppTextTheme.textTheme.labelLarge?.copyWith(color: Colors.white),
+        textStyle: AppTextTheme.darkTextTheme.labelLarge?.copyWith(color: Colors.white),
       ),
     ),
     chipTheme: ChipThemeData(
-      labelStyle : AppTextTheme.textTheme.labelMedium,
+      labelStyle : AppTextTheme.darkTextTheme.labelMedium,
       shape      : RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       padding    : const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
     ),
@@ -214,7 +214,7 @@ class AppTheme {
       behavior         : SnackBarBehavior.floating,
       shape            : RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       backgroundColor  : const Color(0xFF1E293B),
-      contentTextStyle : AppTextTheme.textTheme.bodyMedium?.copyWith(color: Colors.white),
+      contentTextStyle : AppTextTheme.darkTextTheme.bodyMedium?.copyWith(color: Colors.white),
     ),
     sliderTheme: SliderThemeData(
       activeTrackColor          : const Color(0xFF818CF8),
@@ -223,7 +223,7 @@ class AppTheme {
       overlayColor              : const Color(0xFF818CF8).withValues(alpha: 0.15),
       valueIndicatorColor       : const Color(0xFF818CF8),
       trackHeight               : 4,
-      valueIndicatorTextStyle   : AppTextTheme.textTheme.labelMedium?.copyWith(color: Colors.white),
+      valueIndicatorTextStyle   : AppTextTheme.darkTextTheme.labelMedium?.copyWith(color: Colors.white),
     ),
     dialogTheme: DialogThemeData(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),

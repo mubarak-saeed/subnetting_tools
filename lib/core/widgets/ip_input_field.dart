@@ -82,6 +82,7 @@ class _IpInputFieldState extends State<IpInputField> {
       children: [
         TextField(
           controller: widget.controller,
+          style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w700),
           decoration: InputDecoration(
             labelText: widget.labelText,
             hintText: widget.hintText,

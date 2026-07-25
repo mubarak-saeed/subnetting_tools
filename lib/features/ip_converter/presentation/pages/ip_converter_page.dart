@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../../core/network/ip_network_engine.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/bit_grid_widget.dart';
 import '../../../../core/widgets/ip_input_field.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -15,11 +16,11 @@ class IpConverterPage extends StatefulWidget {
 
 class _IpConverterPageState extends State<IpConverterPage> {
   final _controller = TextEditingController(text: '192.168.1.1');
-  String _binary = '';
-  String _hex = '';
-  String _decimal = '';
+  String _binary   = '';
+  String _hex      = '';
+  String _decimal  = '';
   String? _errorKey;
-  String _mode = 'decimal';
+  String _mode     = 'decimal';
 
   void _convert() {
     setState(() {
@@ -32,16 +33,16 @@ class _IpConverterPageState extends State<IpConverterPage> {
             return;
           }
           _decimal = input;
-          _binary = IpNetworkEngine.toBinaryString(input);
-          _hex = IpNetworkEngine.toHexString(input);
+          _binary  = IpNetworkEngine.toBinaryString(input);
+          _hex     = IpNetworkEngine.toHexString(input);
         } else if (_mode == 'binary') {
           _decimal = IpNetworkEngine.binaryToDecimalIp(input);
-          _binary = IpNetworkEngine.toBinaryString(_decimal);
-          _hex = IpNetworkEngine.toHexString(_decimal);
+          _binary  = IpNetworkEngine.toBinaryString(_decimal);
+          _hex     = IpNetworkEngine.toHexString(_decimal);
         } else if (_mode == 'hex') {
           _decimal = IpNetworkEngine.hexToDecimalIp(input);
-          _binary = IpNetworkEngine.toBinaryString(_decimal);
-          _hex = IpNetworkEngine.toHexString(_decimal);
+          _binary  = IpNetworkEngine.toBinaryString(_decimal);
+          _hex     = IpNetworkEngine.toHexString(_decimal);
         }
 
         HistoryStorage.addHistoryEntry(
@@ -53,9 +54,9 @@ class _IpConverterPageState extends State<IpConverterPage> {
         );
       } catch (_) {
         _errorKey = 'invalidInput';
-        _binary = '';
-        _hex = '';
-        _decimal = '';
+        _binary   = '';
+        _hex      = '';
+        _decimal  = '';
       }
     });
   }
@@ -68,27 +69,27 @@ class _IpConverterPageState extends State<IpConverterPage> {
 
   @override
   Widget build(BuildContext context) {
-    final tr = AppLocalizations.of(context);
+    final tr    = AppLocalizations.of(context);
+    final theme = Theme.of(context);
 
     return Scaffold(
       appBar: AppBar(title: Text(tr.translate('ipConverter'))),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         physics: const BouncingScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            // Mode Select & Input Form
             Card(
-              elevation: 2,
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(AppSpacing.cardPadding),
                 child: Column(
                   children: [
                     DropdownButtonFormField<String>(
                       value: _mode,
                       decoration: InputDecoration(
                         labelText: tr.translate('mode'),
-                        border: const OutlineInputBorder(),
                       ),
                       items: [
                         DropdownMenuItem(value: 'decimal', child: Text(tr.translate('decimal'))),
@@ -97,7 +98,7 @@ class _IpConverterPageState extends State<IpConverterPage> {
                       ],
                       onChanged: (v) => setState(() => _mode = v!),
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: AppSpacing.md),
                     if (_mode == 'decimal')
                       IpInputField(
                         controller: _controller,
@@ -108,32 +109,31 @@ class _IpConverterPageState extends State<IpConverterPage> {
                         controller: _controller,
                         decoration: InputDecoration(
                           labelText: '${tr.translate('enterIp')} (${tr.translate(_mode)})',
-                          border: const OutlineInputBorder(),
                           suffixIcon: IconButton(
-                            icon: const Icon(Icons.clear),
+                            icon: const Icon(Icons.clear_rounded),
                             onPressed: () => _controller.clear(),
                           ),
                         ),
                       ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.lg),
                     ElevatedButton.icon(
                       onPressed: _convert,
                       style: ElevatedButton.styleFrom(
                         minimumSize: const Size.fromHeight(52),
                       ),
-                      icon: const Icon(Icons.swap_horiz),
+                      icon: const Icon(Icons.swap_horiz_rounded),
                       label: Text(tr.translate('convert')),
                     ),
                   ],
                 ),
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             if (_errorKey != null)
               Card(
-                color: Theme.of(context).colorScheme.error,
+                color: theme.colorScheme.error,
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(AppSpacing.md),
                   child: Text(
                     tr.translate(_errorKey!),
                     style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
@@ -141,27 +141,29 @@ class _IpConverterPageState extends State<IpConverterPage> {
                 ),
               ),
             if (_decimal.isNotEmpty && _errorKey == null) ...[
+              // Bit Grid Visualization
               BitGridWidget(binaryIp: _binary, cidr: 32),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.md),
+
+              // Conversion Summary Card
               Card(
-                elevation: 2,
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(AppSpacing.cardPadding),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            tr.translate('ipConverter'),
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
+                          Expanded(
+                            child: Text(
+                              tr.translate('ipConverter'),
+                              style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
-                          IconButton(
-                            icon: const Icon(Icons.copy),
-                            tooltip: tr.translate('copy'),
+                          const SizedBox(width: AppSpacing.sm),
+                          ElevatedButton.icon(
                             onPressed: () {
                               final text = 'Decimal: $_decimal\nBinary: $_binary\nHex: $_hex';
                               Clipboard.setData(ClipboardData(text: text));
@@ -169,13 +171,25 @@ class _IpConverterPageState extends State<IpConverterPage> {
                                 SnackBar(content: Text(tr.translate('copiedToClipboard'))),
                               );
                             },
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                              minimumSize: Size.zero,
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            ),
+                            icon: const Icon(Icons.copy_rounded, size: 14),
+                            label: Text(tr.translate('copy'), style: const TextStyle(fontSize: 12)),
                           ),
                         ],
                       ),
-                      const Divider(),
-                      _buildRow(context, tr.translate('decimal'), _decimal),
-                      _buildRow(context, tr.translate('binaryIp'), _binary),
-                      _buildRow(context, tr.translate('hexIp'), _hex),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: AppSpacing.sm),
+                        child: Divider(height: 1),
+                      ),
+                      _buildConversionBox(context, tr.translate('decimal'), _decimal),
+                      const SizedBox(height: AppSpacing.xs),
+                      _buildConversionBox(context, tr.translate('binaryIp'), _formatBinaryWithDots(_binary)),
+                      const SizedBox(height: AppSpacing.xs),
+                      _buildConversionBox(context, tr.translate('hexIp'), _hex),
                     ],
                   ),
                 ),
@@ -187,30 +201,54 @@ class _IpConverterPageState extends State<IpConverterPage> {
     );
   }
 
-  Widget _buildRow(BuildContext context, String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6.0),
+  Widget _buildConversionBox(BuildContext context, String label, String value) {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.sm),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.35),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+      ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            flex: 2,
+          SizedBox(
+            width: 100,
             child: Text(
               label,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+              style: theme.textTheme.labelMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
           ),
+          const SizedBox(width: AppSpacing.xs),
           Expanded(
-            flex: 3,
-            child: Text(
+            child: SelectableText(
               value,
-              style: Theme.of(context).textTheme.bodyMedium,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.w700,
+                fontFamily: 'monospace',
+              ),
             ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.copy_rounded, size: 16),
+            onPressed: () {
+              Clipboard.setData(ClipboardData(text: value));
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  duration: const Duration(seconds: 1),
+                  content: Text('$value ${AppLocalizations.of(context).translate("copiedToClipboard")}'),
+                ),
+              );
+            },
           ),
         ],
       ),
     );
+  }
+
+  String _formatBinaryWithDots(String rawBinary) {
+    final clean = rawBinary.replaceAll('.', '');
+    if (clean.length != 32) return rawBinary;
+    return '${clean.substring(0, 8)}.${clean.substring(8, 16)}.${clean.substring(16, 24)}.${clean.substring(24, 32)}';
   }
 }

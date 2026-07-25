@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_theme_extension.dart';
 import '../../../../core/utils/page_routes.dart';
-import '../../../../core/widgets/cidr_lookup_dialog.dart';
+import '../../../../core/widgets/cidr_lookup_page.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../cisco_cli/presentation/pages/cisco_cli_page.dart';
 import '../../../cisco_vlsm/presentation/pages/cisco_vlsm_page.dart';
@@ -166,9 +166,9 @@ class _HomePageState extends State<HomePage> {
         IconButton(
           icon   : const Icon(Icons.table_chart_outlined),
           tooltip: tr.translate('cidrReferenceTable'),
-          onPressed: () => showDialog(
-            context: context,
-            builder: (_) => const CidrLookupDialog(),
+          onPressed: () => Navigator.push(
+            context,
+            AppPageRoutes.fadeSlide(const CidrLookupPage()),
           ),
         ),
         // Theme toggle

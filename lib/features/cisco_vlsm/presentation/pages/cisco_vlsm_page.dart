@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../../core/network/cisco_network_engine.dart';
+import '../../../../core/utils/page_routes.dart';
 import '../../../../core/widgets/cidr_selector_chips.dart';
 import '../../../../core/widgets/ip_input_field.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../history/logic/history_storage.dart';
 import '../widgets/vlsm_allocation_card.dart';
+import 'vlsm_details_page.dart';
 
 /// Page for configuring VLSM subnet allocations by host requirements.
 class CiscoVlsmPage extends StatefulWidget {
@@ -235,13 +237,35 @@ class _CiscoVlsmPageState extends State<CiscoVlsmPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'VLSM Subnets (${_allocations.length}):',
-                        style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                      Expanded(
+                        child: Text(
+                          'VLSM Subnets (${_allocations.length}):',
+                          style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
-                      ElevatedButton.icon(
-                        onPressed: () {
-                          final text = _allocations.map((a) => '''
+                      const SizedBox(width: 8),
+                      Row(
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.fullscreen_rounded),
+                            tooltip: tr.translate('viewFullDetails'),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                AppPageRoutes.fadeSlide(
+                                  VlsmDetailsPage(
+                                    baseIp: _baseIpController.text.trim(),
+                                    baseCidr: _baseCidr,
+                                    allocations: _allocations,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                          ElevatedButton.icon(
+                            onPressed: () {
+                              final text = _allocations.map((a) => '''
 [${a.name}]
 Subnet: ${a.networkAddress}/${a.cidr}
 Netmask: ${a.netmask}
@@ -250,18 +274,20 @@ Range: ${a.firstUsableIp} - ${a.lastUsableIp}
 Broadcast: ${a.broadcastAddress}
 Requested: ${a.requestedHosts} | Allocated: ${a.allocatedHosts} | Wasted: ${a.wastedHosts}
 ''').join('\n---\n');
-                          Clipboard.setData(ClipboardData(text: text));
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(tr.translate('copiedToClipboard'))),
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                          minimumSize: Size.zero,
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        ),
-                        icon: const Icon(Icons.copy, size: 14),
-                        label: Text(tr.translate('copy'), style: const TextStyle(fontSize: 12)),
+                              Clipboard.setData(ClipboardData(text: text));
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(tr.translate('copiedToClipboard'))),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                              minimumSize: Size.zero,
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            ),
+                            icon: const Icon(Icons.copy, size: 14),
+                            label: Text(tr.translate('copy'), style: const TextStyle(fontSize: 12)),
+                          ),
+                        ],
                       ),
                     ],
                   ),
