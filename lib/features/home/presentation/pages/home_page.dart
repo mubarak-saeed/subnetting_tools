@@ -142,13 +142,17 @@ class _HomePageState extends State<HomePage> {
           Container(
             padding   : const EdgeInsets.all(AppSpacing.sm),
             decoration: BoxDecoration(
-              color        : theme.colorScheme.primary.withValues(alpha: 0.12),
+              color        : Colors.transparent,
               borderRadius : BorderRadius.circular(AppSpacing.radiusSm),
             ),
-            child: Icon(
-              Icons.lan_rounded,
-              color: theme.colorScheme.primary,
-              size : AppSpacing.iconMd,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+              child: Image.asset(
+                'assets/icon/icon.png',
+                width: 32,
+                height: 32,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
           const SizedBox(width: AppSpacing.sm),

@@ -1,12 +1,20 @@
+<p align="center">
+  <img src="../assets/icon/icon.png" width="160" alt="شعار التطبيق" />
+</p>
+
 # 🌐 جناح أدوات الشبكات وتقسيم IPv4 (Network Tools Suite)
 
-[![Flutter](https://img.shields.io/badge/Flutter-3.x-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
-[![Dart](https://img.shields.io/badge/Dart-3.x-0175C2?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev)
-[![Material 3](https://img.shields.io/badge/Material_3-7B1FA2?style=for-the-badge&logo=materialdesign&logoColor=white)](https://m3.material.io)
-[![Cisco CCNA](https://img.shields.io/badge/Cisco_CCNA-Standard-1BA0D7?style=for-the-badge&logo=cisco&logoColor=white)](https://www.cisco.com)
-[![Hive DB](https://img.shields.io/badge/Hive-Local_Storage-F58220?style=for-the-badge&logo=hive&logoColor=white)](https://docs.hivedb.dev)
+<p align="center">
+  <a href="https://flutter.dev"><img src="https://img.shields.io/badge/Flutter-3.x-02569B?style=for-the-badge&logo=flutter&logoColor=white" alt="Flutter" /></a>
+  <a href="https://dart.dev"><img src="https://img.shields.io/badge/Dart-3.x-0175C2?style=for-the-badge&logo=dart&logoColor=white" alt="Dart" /></a>
+  <a href="https://m3.material.io"><img src="https://img.shields.io/badge/Material_3-7B1FA2?style=for-the-badge&logo=materialdesign&logoColor=white" alt="Material 3" /></a>
+  <a href="https://www.cisco.com"><img src="https://img.shields.io/badge/Cisco_CCNA-Standard-1BA0D7?style=for-the-badge&logo=cisco&logoColor=white" alt="Cisco CCNA" /></a>
+  <a href="https://docs.hivedb.dev"><img src="https://img.shields.io/badge/Hive-Local_Storage-F58220?style=for-the-badge&logo=hive&logoColor=white" alt="Hive DB" /></a>
+</p>
 
-[ English README (العودة إلى المستند الرئيسي بالإنجليزية)](../README.md)
+<p align="center">
+  <a href="../README.md"><b>📖 English README (العودة إلى المستند الرئيسي بالإنجليزية)</b></a>
+</p>
 
 ---
 

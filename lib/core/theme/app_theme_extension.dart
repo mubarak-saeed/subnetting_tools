@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 
 /// AppThemeExtension — Custom Design Tokens via Material 3 ThemeExtension.
 ///
+/// Derived directly from official app logo (`logo.png`) brand identity.
 /// Access in widgets via: `Theme.of(context).extension<AppThemeExtension>()!`
-///
-/// Contains feature gradient colors and semantic status badge colors
-/// that aren't part of the standard M3 ColorScheme.
 @immutable
 class AppThemeExtension extends ThemeExtension<AppThemeExtension> {
   // ─── Feature Card Gradients ──────────────────────────────────────
@@ -45,39 +43,39 @@ class AppThemeExtension extends ThemeExtension<AppThemeExtension> {
     required this.hostBitColor,
   });
 
-  // ─── Light Theme Tokens ──────────────────────────────────────────
+  // ─── Light Theme Tokens (Logo Palette Unified) ────────────────────
   static const AppThemeExtension light = AppThemeExtension(
     gradientVlsm       : [Color(0xFF38BDF8), Color(0xFF0284C7)],
-    gradientCli        : [Color(0xFF818CF8), Color(0xFF4F46E5)],
-    gradientIpCalc     : [Color(0xFF34D399), Color(0xFF10B981)],
-    gradientSubnet     : [Color(0xFFFBBF24), Color(0xFFF59E0B)],
-    gradientConverter  : [Color(0xFFC084FC), Color(0xFF9333EA)],
-    gradientClassifier : [Color(0xFFF472B6), Color(0xFFEC4899)],
-    gradientRange      : [Color(0xFF67E8F9), Color(0xFF06B6D4)],
-    gradientHistory    : [Color(0xFF94A3B8), Color(0xFF64748B)],
+    gradientCli        : [Color(0xFF3B82F6), Color(0xFF1D4ED8)],
+    gradientIpCalc     : [Color(0xFF10B981), Color(0xFF059669)],
+    gradientSubnet     : [Color(0xFFFBBF24), Color(0xFFD97706)],
+    gradientConverter  : [Color(0xFF00B4D8), Color(0xFF0077B6)],
+    gradientClassifier : [Color(0xFF60A5FA), Color(0xFF2563EB)],
+    gradientRange      : [Color(0xFF2DD4BF), Color(0xFF0D9488)],
+    gradientHistory    : [Color(0xFF64748B), Color(0xFF475569)],
     statusSuccess      : Color(0xFF10B981),
     statusWarning      : Color(0xFFF59E0B),
     statusError        : Color(0xFFEF4444),
-    statusInfo         : Color(0xFF3B82F6),
-    networkBitColor    : Color(0xFF4F46E5),
+    statusInfo         : Color(0xFF0284C7),
+    networkBitColor    : Color(0xFF0284C7),
     hostBitColor       : Color(0xFFF59E0B),
   );
 
-  // ─── Dark Theme Tokens ───────────────────────────────────────────
+  // ─── Dark Theme Tokens (Logo Palette Unified) ─────────────────────
   static const AppThemeExtension dark = AppThemeExtension(
     gradientVlsm       : [Color(0xFF38BDF8), Color(0xFF0369A1)],
-    gradientCli        : [Color(0xFF818CF8), Color(0xFF3730A3)],
-    gradientIpCalc     : [Color(0xFF34D399), Color(0xFF059669)],
-    gradientSubnet     : [Color(0xFFFBBF24), Color(0xFFD97706)],
-    gradientConverter  : [Color(0xFFC084FC), Color(0xFF7E22CE)],
-    gradientClassifier : [Color(0xFFF472B6), Color(0xFFBE185D)],
-    gradientRange      : [Color(0xFF67E8F9), Color(0xFF0891B2)],
-    gradientHistory    : [Color(0xFF94A3B8), Color(0xFF475569)],
+    gradientCli        : [Color(0xFF60A5FA), Color(0xFF1E40AF)],
+    gradientIpCalc     : [Color(0xFF34D399), Color(0xFF047857)],
+    gradientSubnet     : [Color(0xFFFBBF24), Color(0xFFB45309)],
+    gradientConverter  : [Color(0xFF38BDF8), Color(0xFF0284C7)],
+    gradientClassifier : [Color(0xFF93C5FD), Color(0xFF1D4ED8)],
+    gradientRange      : [Color(0xFF5EEAD4), Color(0xFF0F766E)],
+    gradientHistory    : [Color(0xFFCBD5E1), Color(0xFF475569)],
     statusSuccess      : Color(0xFF34D399),
     statusWarning      : Color(0xFFFBBF24),
     statusError        : Color(0xFFF87171),
-    statusInfo         : Color(0xFF60A5FA),
-    networkBitColor    : Color(0xFF818CF8),
+    statusInfo         : Color(0xFF38BDF8),
+    networkBitColor    : Color(0xFF38BDF8),
     hostBitColor       : Color(0xFFFBBF24),
   );
 

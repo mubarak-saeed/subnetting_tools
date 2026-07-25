@@ -14,7 +14,7 @@ class AppLocalizations {
 
   static final Map<String, Map<String, String>> _localizedValues = {
     'en': {
-      'appTitle': 'Network Tools & Subnetting Workbench',
+      'appTitle': 'Subnetting Tools',
       'appSubtitle': 'Essential Engineering Toolkit for Students & Network Engineers',
       'chooseFeature': 'Select a Networking Tool to Begin',
       'ipCalculator': 'IP & Network Calculator',
@@ -121,9 +121,12 @@ class AppLocalizations {
       'networkCapacity': 'Network Capacity Utilization',
       'wastedPercentage': 'Unused Hosts Ratio',
       'departmentBreakdown': 'Department Subnet Breakdown',
+      'usableRange': 'Usable Host IP Range',
+      'confirmClearHistory': 'Are you sure you want to clear all history entries?',
+      'cancel': 'Cancel',
     },
     'ar': {
-      'appTitle': 'حقيبة أدوات وتخطيط الشبكات',
+      'appTitle': 'أدوات الشبكات',
       'appSubtitle': 'حقيبة هندسية متكاملة لطلاب شبكات الحاسوب والمهندسين',
       'chooseFeature': 'اختر الأداة الشبكية المطلوبة للبدء',
       'ipCalculator': 'حاسبة عناوين IP والشبكات',
@@ -224,12 +227,17 @@ class AppLocalizations {
       'ciscoCliGenerator': 'مولد أوامر Cisco IOS',
       'activeIp': 'العنوان النشط',
       'favorites': 'المفضلة',
+      'starredTab': 'المفضلة',
+      'historyAndFavorites': 'السجل والمفضلة',
       'viewFullDetails': 'عرض التقرير الفني الشامل',
       'vlsmReportTitle': 'خطة توزيع الشبكات الفرعية (VLSM Plan)',
       'shareReport': 'مشاركة التقرير الهندسي',
       'networkCapacity': 'نسبة استيعاب أجهزة الشبكة',
       'wastedPercentage': 'نسبة العناوين غير المستغلة',
       'departmentBreakdown': 'تفاصيل الأقسام والشبكات المخصصة',
+      'usableRange': 'مدى عناوين الأجهزة المتاحة',
+      'confirmClearHistory': 'هل أنت تأكد من رغبتك في مسح سجل العمليات الحسابية بالكامل؟',
+      'cancel': 'إلغاء',
     },
   };
 

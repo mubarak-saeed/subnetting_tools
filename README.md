@@ -1,13 +1,21 @@
+<p align="center">
+  <img src="assets/icon/icon.png" width="160" alt="Network Tools Suite Logo" />
+</p>
+
 # 🌐 IPv4 Network Tools & VLSM Subnetting Suite
 
-[![Flutter Version](https://img.shields.io/badge/Flutter-3.x-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
-[![Dart Version](https://img.shields.io/badge/Dart-3.x-0175C2?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev)
-[![Design System](https://img.shields.io/badge/Material_3-7B1FA2?style=for-the-badge&logo=materialdesign&logoColor=white)](https://m3.material.io)
-[![Standard](https://img.shields.io/badge/Cisco_CCNA-Standard-1BA0D7?style=for-the-badge&logo=cisco&logoColor=white)](https://www.cisco.com)
-[![Database](https://img.shields.io/badge/Hive-Local_Storage-F58220?style=for-the-badge&logo=hive&logoColor=white)](https://docs.hivedb.dev)
-[![License](https://img.shields.io/badge/License-MIT-blue.style=for-the-badge)](LICENSE)
+<p align="center">
+  <a href="https://flutter.dev"><img src="https://img.shields.io/badge/Flutter-3.x-02569B?style=for-the-badge&logo=flutter&logoColor=white" alt="Flutter Version" /></a>
+  <a href="https://dart.dev"><img src="https://img.shields.io/badge/Dart-3.x-0175C2?style=for-the-badge&logo=dart&logoColor=white" alt="Dart Version" /></a>
+  <a href="https://m3.material.io"><img src="https://img.shields.io/badge/Material_3-7B1FA2?style=for-the-badge&logo=materialdesign&logoColor=white" alt="Material 3" /></a>
+  <a href="https://www.cisco.com"><img src="https://img.shields.io/badge/Cisco_CCNA-Standard-1BA0D7?style=for-the-badge&logo=cisco&logoColor=white" alt="Cisco Standard" /></a>
+  <a href="https://docs.hivedb.dev"><img src="https://img.shields.io/badge/Hive-Local_Storage-F58220?style=for-the-badge&logo=hive&logoColor=white" alt="Hive Database" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" alt="License" /></a>
+</p>
 
-[ Arabic Documentation (المستندات باللغة العربية)](docs/README_AR.md)
+<p align="center">
+  <a href="docs/README_AR.md"><b>📖 Arabic Documentation (المستندات باللغة العربية)</b></a>
+</p>
 
 ---
 

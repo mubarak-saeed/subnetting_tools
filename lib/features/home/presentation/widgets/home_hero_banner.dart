@@ -94,23 +94,55 @@ class HomeHeroBanner extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: AppSpacing.md),
-                // Title
-                Text(
-                  tr.translate('appTitle'),
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    color     : Colors.white,
-                    fontWeight: FontWeight.w800,
-                    height    : 1.2,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.xs),
-                // Subtitle
-                Text(
-                  tr.translate('appSubtitle'),
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color  : Colors.white.withValues(alpha: 0.82),
-                    height : 1.5,
-                  ),
+                // Title with Logo Image
+                Row(
+                  children: [
+                    Container(
+                      width: 56,
+                      height: 56,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.25),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                        child: Image.asset(
+                          'assets/icon/icon.png',
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: AppSpacing.md),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            tr.translate('appTitle'),
+                            style: theme.textTheme.titleLarge?.copyWith(
+                              color     : Colors.white,
+                              fontWeight: FontWeight.w800,
+                              height    : 1.2,
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacing.xs),
+                          Text(
+                            tr.translate('appSubtitle'),
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color  : Colors.white.withValues(alpha: 0.85),
+                              height : 1.4,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
