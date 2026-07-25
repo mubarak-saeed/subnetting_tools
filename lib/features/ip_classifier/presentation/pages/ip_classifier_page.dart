@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../../core/network/ip_network_engine.dart';
+import '../../../../core/widgets/ip_input_field.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../history/logic/history_storage.dart';
 
@@ -52,6 +53,7 @@ class _IpClassifierPageState extends State<IpClassifierPage> {
       appBar: AppBar(title: Text(tr.translate('ipClassifier'))),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
+        physics: const BouncingScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -61,23 +63,15 @@ class _IpClassifierPageState extends State<IpClassifierPage> {
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   children: [
-                    TextField(
+                    IpInputField(
                       controller: _controller,
-                      decoration: InputDecoration(
-                        labelText: tr.translate('enterIp'),
-                        border: const OutlineInputBorder(),
-                        suffixIcon: IconButton(
-                          icon: const Icon(Icons.clear),
-                          onPressed: () => _controller.clear(),
-                        ),
-                      ),
-                      keyboardType: TextInputType.number,
+                      labelText: tr.translate('enterIp'),
                     ),
                     const SizedBox(height: 16),
                     ElevatedButton.icon(
                       onPressed: _classify,
                       style: ElevatedButton.styleFrom(
-                        minimumSize: const Size.fromHeight(48),
+                        minimumSize: const Size.fromHeight(52),
                       ),
                       icon: const Icon(Icons.category),
                       label: Text(tr.translate('classify')),
@@ -94,7 +88,7 @@ class _IpClassifierPageState extends State<IpClassifierPage> {
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
                     tr.translate(_errorKey!),
-                    style: const TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),

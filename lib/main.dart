@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'core/di/service_locator.dart';
 import 'core/settings/settings_repository.dart';
 import 'core/theme/app_theme.dart';
 import 'features/home/presentation/pages/home_page.dart';
@@ -9,6 +10,7 @@ import 'l10n/app_localizations.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
+  await sl.init();
   final themeMode = await SettingsRepository.getThemeMode();
   final locale = await SettingsRepository.getLocale();
 

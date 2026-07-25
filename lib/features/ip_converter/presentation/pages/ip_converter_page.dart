@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../../core/network/ip_network_engine.dart';
 import '../../../../core/widgets/bit_grid_widget.dart';
+import '../../../../core/widgets/ip_input_field.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../history/logic/history_storage.dart';
 
@@ -73,6 +74,7 @@ class _IpConverterPageState extends State<IpConverterPage> {
       appBar: AppBar(title: Text(tr.translate('ipConverter'))),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
+        physics: const BouncingScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -96,22 +98,28 @@ class _IpConverterPageState extends State<IpConverterPage> {
                       onChanged: (v) => setState(() => _mode = v!),
                     ),
                     const SizedBox(height: 12),
-                    TextField(
-                      controller: _controller,
-                      decoration: InputDecoration(
+                    if (_mode == 'decimal')
+                      IpInputField(
+                        controller: _controller,
                         labelText: '${tr.translate('enterIp')} (${tr.translate(_mode)})',
-                        border: const OutlineInputBorder(),
-                        suffixIcon: IconButton(
-                          icon: const Icon(Icons.clear),
-                          onPressed: () => _controller.clear(),
+                      )
+                    else
+                      TextField(
+                        controller: _controller,
+                        decoration: InputDecoration(
+                          labelText: '${tr.translate('enterIp')} (${tr.translate(_mode)})',
+                          border: const OutlineInputBorder(),
+                          suffixIcon: IconButton(
+                            icon: const Icon(Icons.clear),
+                            onPressed: () => _controller.clear(),
+                          ),
                         ),
                       ),
-                    ),
                     const SizedBox(height: 16),
                     ElevatedButton.icon(
                       onPressed: _convert,
                       style: ElevatedButton.styleFrom(
-                        minimumSize: const Size.fromHeight(48),
+                        minimumSize: const Size.fromHeight(52),
                       ),
                       icon: const Icon(Icons.swap_horiz),
                       label: Text(tr.translate('convert')),
@@ -128,7 +136,7 @@ class _IpConverterPageState extends State<IpConverterPage> {
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
                     tr.translate(_errorKey!),
-                    style: const TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),

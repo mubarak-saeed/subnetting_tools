@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../../core/network/ip_network_engine.dart';
+import '../../../../core/widgets/ip_input_field.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../history/logic/history_storage.dart';
 
@@ -69,30 +70,20 @@ class _RangeCalculatorPageState extends State<RangeCalculatorPage> {
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   children: [
-                    TextField(
+                    IpInputField(
                       controller: _startController,
-                      decoration: InputDecoration(
-                        labelText: tr.translate('startIp'),
-                        hintText: '192.168.1.1',
-                        border: const OutlineInputBorder(),
-                      ),
-                      keyboardType: TextInputType.number,
+                      labelText: tr.translate('startIp'),
                     ),
                     const SizedBox(height: 12),
-                    TextField(
+                    IpInputField(
                       controller: _endController,
-                      decoration: InputDecoration(
-                        labelText: tr.translate('endIp'),
-                        hintText: '192.168.1.10',
-                        border: const OutlineInputBorder(),
-                      ),
-                      keyboardType: TextInputType.number,
+                      labelText: tr.translate('endIp'),
                     ),
                     const SizedBox(height: 16),
                     ElevatedButton.icon(
                       onPressed: _calculate,
                       style: ElevatedButton.styleFrom(
-                        minimumSize: const Size.fromHeight(48),
+                        minimumSize: const Size.fromHeight(52),
                       ),
                       icon: const Icon(Icons.linear_scale),
                       label: Text(tr.translate('calculateRange')),
@@ -109,7 +100,7 @@ class _RangeCalculatorPageState extends State<RangeCalculatorPage> {
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
                     tr.translate(_errorKey!),
-                    style: const TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),

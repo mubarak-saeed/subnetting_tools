@@ -10,6 +10,7 @@ class SubnetResultCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tr = AppLocalizations.of(context);
+    final theme = Theme.of(context);
 
     if (ipAddress.subnets.isEmpty) return const SizedBox();
 
@@ -22,7 +23,7 @@ class SubnetResultCard extends StatelessWidget {
           children: [
             Text(
               tr.translate('subnets'),
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
             ),
@@ -37,36 +38,47 @@ class SubnetResultCard extends StatelessWidget {
                   margin: const EdgeInsets.only(bottom: 8.0),
                   padding: const EdgeInsets.all(12.0),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-                    borderRadius: BorderRadius.circular(8),
+                    color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            '${tr.translate('subnet')} ${item.index}: ${item.cidrNotation}',
-                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          Expanded(
+                            child: Text(
+                              '${tr.translate('subnet')} ${item.index}: ${item.cidrNotation}',
+                              style: const TextStyle(fontWeight: FontWeight.bold),
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
-                          Text(
-                            '${item.usableHosts} ${tr.translate('usableHosts')}',
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.primary,
-                              fontSize: 12,
+                          const SizedBox(width: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: theme.colorScheme.primary.withValues(alpha: 0.15),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              '${item.usableHosts} ${tr.translate('usableHosts')}',
+                              style: TextStyle(
+                                color: theme.colorScheme.primary,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 11,
+                              ),
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: 6),
                       Text(
                         '${tr.translate('networkAddress')}: ${item.networkAddress} | ${tr.translate('broadcastAddress')}: ${item.broadcastAddress}',
-                        style: const TextStyle(fontSize: 12),
+                        style: const TextStyle(fontSize: 11),
                       ),
                       Text(
                         '${tr.translate('firstUsableIp')}: ${item.firstUsableIp} - ${tr.translate('lastUsableIp')}: ${item.lastUsableIp}',
-                        style: const TextStyle(fontSize: 12),
+                        style: TextStyle(fontSize: 11, color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.8)),
                       ),
                     ],
                   ),

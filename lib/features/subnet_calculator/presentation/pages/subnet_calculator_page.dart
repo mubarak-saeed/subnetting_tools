@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../../core/network/ip_network_engine.dart';
+import '../../../../core/widgets/cidr_selector_chips.dart';
+import '../../../../core/widgets/ip_input_field.dart';
+import '../../../../core/widgets/quick_preset_chips.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../history/logic/history_storage.dart';
 
@@ -57,33 +60,52 @@ class _SubnetCalculatorPageState extends State<SubnetCalculatorPage> {
   @override
   Widget build(BuildContext context) {
     final tr = AppLocalizations.of(context);
+    final theme = Theme.of(context);
 
     return Scaffold(
       appBar: AppBar(title: Text(tr.translate('subnetCalculator'))),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
+        physics: const BouncingScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Card(
               elevation: 2,
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(18.0),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    TextField(
+                    IpInputField(
                       controller: _ipController,
-                      decoration: InputDecoration(
-                        labelText: tr.translate('enterIp'),
-                        hintText: '192.168.1.0',
-                        border: const OutlineInputBorder(),
-                      ),
-                      keyboardType: TextInputType.number,
+                      labelText: tr.translate('enterIp'),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 10),
+                    QuickPresetChips(
+                      onSelected: (ip) {
+                        setState(() {
+                          _ipController.text = ip;
+                        });
+                      },
+                    ),
+                    const SizedBox(height: 18),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('${tr.translate('netmask')}:', style: const TextStyle(fontWeight: FontWeight.bold)),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.primary.withValues(alpha: 0.15),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text('/$_subnetMask', style: TextStyle(color: theme.colorScheme.primary, fontWeight: FontWeight.bold)),
+                        ),
+                      ],
+                    ),
                     Row(
                       children: [
-                        Text('${tr.translate('netmask')}: '),
                         Expanded(
                           child: Slider(
                             value: _subnetMask.toDouble(),
@@ -98,13 +120,31 @@ class _SubnetCalculatorPageState extends State<SubnetCalculatorPage> {
                             },
                           ),
                         ),
-                        Text('/$_subnetMask', style: const TextStyle(fontWeight: FontWeight.bold)),
                       ],
                     ),
-                    const SizedBox(height: 16),
+                    CidrSelectorChips(
+                      selectedCidr: _subnetMask,
+                      onCidrSelected: (cidr) {
+                        setState(() => _subnetMask = cidr);
+                      },
+                    ),
+                    const SizedBox(height: 18),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('${tr.translate('numberOfSubnets')}:', style: const TextStyle(fontWeight: FontWeight.bold)),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.secondary.withValues(alpha: 0.15),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text('$_numberOfSubnets', style: TextStyle(color: theme.colorScheme.secondary, fontWeight: FontWeight.bold)),
+                        ),
+                      ],
+                    ),
                     Row(
                       children: [
-                        Text('${tr.translate('numberOfSubnets')}: '),
                         Expanded(
                           child: Slider(
                             value: _numberOfSubnets.toDouble(),
@@ -119,16 +159,15 @@ class _SubnetCalculatorPageState extends State<SubnetCalculatorPage> {
                             },
                           ),
                         ),
-                        Text('$_numberOfSubnets', style: const TextStyle(fontWeight: FontWeight.bold)),
                       ],
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 18),
                     ElevatedButton.icon(
                       onPressed: _calculate,
                       style: ElevatedButton.styleFrom(
-                        minimumSize: const Size.fromHeight(48),
+                        minimumSize: const Size.fromHeight(52),
                       ),
-                      icon: const Icon(Icons.calculate),
+                      icon: const Icon(Icons.hub),
                       label: Text(tr.translate('calculateSubnets')),
                     ),
                   ],
@@ -143,7 +182,7 @@ class _SubnetCalculatorPageState extends State<SubnetCalculatorPage> {
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
                     tr.translate(_errorKey!),
-                    style: const TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
@@ -160,9 +199,7 @@ class _SubnetCalculatorPageState extends State<SubnetCalculatorPage> {
                               fontWeight: FontWeight.bold,
                             ),
                       ),
-                      IconButton(
-                        icon: const Icon(Icons.copy),
-                        tooltip: tr.translate('copy'),
+                      ElevatedButton.icon(
                         onPressed: () {
                           final text = _subnets
                               .map((s) =>
@@ -173,10 +210,17 @@ class _SubnetCalculatorPageState extends State<SubnetCalculatorPage> {
                             SnackBar(content: Text(tr.translate('copiedToClipboard'))),
                           );
                         },
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                          minimumSize: Size.zero,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
+                        icon: const Icon(Icons.copy, size: 16),
+                        label: Text(tr.translate('copy'), style: const TextStyle(fontSize: 12)),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 12),
                   ListView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
@@ -184,12 +228,78 @@ class _SubnetCalculatorPageState extends State<SubnetCalculatorPage> {
                     itemBuilder: (context, index) {
                       final subnet = _subnets[index];
                       return Card(
-                        margin: const EdgeInsets.only(bottom: 8.0),
-                        child: ListTile(
-                          title: Text('${tr.translate('subnet')} ${subnet.index}: ${subnet.cidrNotation}',
-                              style: const TextStyle(fontWeight: FontWeight.bold)),
-                          subtitle: Text(
-                              '${tr.translate('networkAddress')}: ${subnet.networkAddress}\n${tr.translate('broadcastAddress')}: ${subnet.broadcastAddress}\n${tr.translate('firstUsableIp')}: ${subnet.firstUsableIp}\n${tr.translate('lastUsableIp')}: ${subnet.lastUsableIp}\n${tr.translate('usableHosts')}: ${subnet.usableHosts}'),
+                        elevation: 1.5,
+                        margin: const EdgeInsets.only(bottom: 10.0),
+                        child: Padding(
+                          padding: const EdgeInsets.all(14.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Container(
+                                    width: 28,
+                                    height: 28,
+                                    decoration: BoxDecoration(
+                                      color: theme.colorScheme.primary.withValues(alpha: 0.15),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    alignment: Alignment.center,
+                                    child: Text('${subnet.index}',
+                                        style: TextStyle(
+                                            color: theme.colorScheme.primary,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 12)),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: Text(
+                                      subnet.cidrNotation,
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold, fontSize: 15),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFF10B981).withValues(alpha: 0.15),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Text(
+                                      '${subnet.usableHosts} ${tr.translate('usableHosts')}',
+                                      style: const TextStyle(
+                                          color: Color(0xFF10B981),
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 11),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const Divider(height: 16),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text('${tr.translate('networkAddress')}: ${subnet.networkAddress}',
+                                        style: const TextStyle(fontSize: 11),
+                                        overflow: TextOverflow.ellipsis),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text('${tr.translate('broadcastAddress')}: ${subnet.broadcastAddress}',
+                                        style: const TextStyle(fontSize: 11),
+                                        overflow: TextOverflow.ellipsis),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                '${tr.translate('firstUsableIp')}: ${subnet.firstUsableIp} - ${tr.translate('lastUsableIp')}: ${subnet.lastUsableIp}',
+                                style: TextStyle(fontSize: 11, color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.8)),
+                              ),
+                            ],
+                          ),
                         ),
                       );
                     },
