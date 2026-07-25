@@ -1,78 +1,75 @@
-# 🌐 Network Tools Suite (IPv4 Engine & Subnetting Toolkit)
+# 🌐 IPv4 Network Tools & VLSM Subnetting Suite
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white" alt="Flutter Badge" />
-  <img src="https://img.shields.io/badge/Dart-0175C2?style=for-the-badge&logo=dart&logoColor=white" alt="Dart Badge" />
-  <img src="https://img.shields.io/badge/Material_Design_3-7B1FA2?style=for-the-badge&logo=materialdesign&logoColor=white" alt="Material 3 Badge" />
-  <img src="https://img.shields.io/badge/Cisco_CCNA-1BA0D7?style=for-the-badge&logo=cisco&logoColor=white" alt="Cisco Badge" />
-  <img src="https://img.shields.io/badge/Hive_DB-F58220?style=for-the-badge&logo=hive&logoColor=white" alt="Hive Badge" />
-</p>
+[![Flutter Version](https://img.shields.io/badge/Flutter-3.x-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
+[![Dart Version](https://img.shields.io/badge/Dart-3.x-0175C2?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev)
+[![Design System](https://img.shields.io/badge/Material_3-7B1FA2?style=for-the-badge&logo=materialdesign&logoColor=white)](https://m3.material.io)
+[![Standard](https://img.shields.io/badge/Cisco_CCNA-Standard-1BA0D7?style=for-the-badge&logo=cisco&logoColor=white)](https://www.cisco.com)
+[![Database](https://img.shields.io/badge/Hive-Local_Storage-F58220?style=for-the-badge&logo=hive&logoColor=white)](https://docs.hivedb.dev)
+[![License](https://img.shields.io/badge/License-MIT-blue.style=for-the-badge)](LICENSE)
 
----
-
-## 📌 Arabic Summary | نبذة عن التطبيق باللغة العربية
-
-تطبيق **Network Tools Suite** هو جناح أدوات هندسة شبكات IPv4 متكامل، مصمم بأعلى معايير **Material Design 3** وهيكلية كود نظيفة (**Clean Architecture** + **BLoC**). يوفر التطبيق حلاً شاملاً لمهندسي شبكات **Cisco CCNA/CCNP** والطلاب والمطورين لتقسيم الشبكات، توليد أوامر الأجهزة، وتحليل العناوين بدقة متناهية.
+[ Arabic Documentation (المستندات باللغة العربية)](docs/README_AR.md)
 
 ---
 
-## ✨ Key Features | الميزات الرئيسية
+## 🚀 Overview
 
-| Feature | Description | الوصف بالعربية |
+**IPv4 Network Tools Suite** is a cross-platform Flutter application engineered for network administrators, Cisco CCNA/CCNP candidates, systems engineers, and computer science students. Built with **Clean Architecture**, **BLoC State Management**, and a custom **Material 3 Design System**, it provides an intuitive, high-precision toolkit for IPv4 subnet calculations, Cisco CLI configuration generation, interactive binary bit mapping, and VLSM network planning.
+
+---
+
+## ✨ Features Matrix
+
+| Module | Core Functionality | Technical Highlights |
 |---|---|---|
-| 🧮 **IPv4 Network Calculator** | Complete calculation of Netmask, Broadcast, Wildcard, Usable IP Range, 32-bit Binary, Hexadecimal, and Reverse DNS (in-addr.arpa). | حاسبة IPv4 كاملة تشمل أقنعة الشبكة، المدى المتاح، العنوان العكسي والتمثيل الثنائي. |
-| 📊 **Full Technical Reports** | Dedicated full-screen technical analysis report for any IPv4 address with interactive bit map and capacity gauge. | تقرير فني شامل للشبكة مع خريطة البتات الـ 32 التفاعلية ومؤشر سعة الأجهزة. |
-| 🔀 **VLSM Subnetting Engine** | Cisco-standard Variable Length Subnet Masking (VLSM) calculator by host requirements with efficiency percentage. | محرك تقسيم الشبكات المتغير (VLSM) وفق معايير Cisco مع قياس نسبة الكفاءة والعناوين المهدورة. |
-| 💻 **Cisco IOS CLI Generator** | Automatic generation of Cisco Router/Switch interface configs, Sub-interfaces, IP Helper, Static Routing, and ACLs. | مولد أوامر راوترات ومفاتيح Cisco تلقائياً للإعدادات، الواجهات الفرعية، والموجهات الثابتة. |
-| 🧩 **Interactive 32-Bit BitGrid** | Visual 32-bit map showing Network bits (Blue) vs Host bits (Green) with interactive bit state inspection. | خريطة البتات الـ 32 التفاعلية الملونة لتحديد بتات الشبكة مقابل بتات الأجهزة بنقرة واحدة. |
-| 📖 **Full-Screen CIDR Reference Table** | Interactive lookup table for all 33 IPv4 prefixes (`/0` to `/32`) with class filters (A, B, C) and search. | جدول CIDR المرجعي الشامل لجميع السوابق 33 مع فلترة سريعة ومحرك بحث مدمج. |
-| 🔄 **IP Base Systems Converter** | Instant conversion between Decimal, 32-bit Binary (dot-separated), and Hexadecimal notations. | محول الأنظمة الرقمية (العشري، الثنائي المنقط، والست عشري) مع أزرار نسخ فورية. |
-| 🏷️ **IP Classifier & Scope Inspector** | Classifies IPv4 addresses into Class A-E, RFC 1918 Private, Public Internet, Loopback, or Multicast. | مصنف فئات العناوين وبيئة التشغيل (خاص، عام، استرجاعي، بث متعدد). |
-| 📏 **Consecutive Range Generator** | Generates sequential IPv4 ranges with host counts and one-click item copying. | مولد مدى عناوين IP المتسلسلة مع رقم تسلسلي وتصدير فوري. |
-| ⭐ **History & Favorites Manager** | Hive local storage for past calculation history and starred favorite entries. | سجل النشاطات والمفضلة المعتمد على قاعدة بيانات Hive المحلية السريعة. |
-| 🌍 **Full Dual Language (AR/EN)** | Seamless localization between Arabic (RTL) and English (LTR) with custom fonts (Cairo). | دعم كامل ومزدوج للغتين العربية والإنجليزية مع ضبط اتجاهات النصوص والرسم. |
+| 🧮 **IPv4 Network Calculator** | Complete address decomposition for any IPv4 & CIDR block. | Calculates Subnet Mask, Wildcard Mask, Network Address, Broadcast Address, Usable Host Range, Total/Usable Capacities, Binary, Hexadecimal, & Reverse DNS (`in-addr.arpa`). |
+| 📊 **Full Technical Reports** | Deep-dive network inspection page (`IpDetailsPage`). | Interactive 32-bit bit grid map, visual host capacity progress gauge, advanced identifiers, and 1-click formatted report copy. |
+| 🔀 **VLSM Subnetting Engine** | Cisco-standard Variable Length Subnet Masking (`VlsmDetailsPage`). | Computes allocations based on required host counts per department, calculates wasted hosts ratio, efficiency percentages, and exports total plan specs. |
+| 💻 **Cisco IOS CLI Generator** | Automated Cisco router/switch command synthesis. | Generates Interface IP configuration, Sub-interface 802.1Q encapsulation, IP Helper addresses, Static Routes, and Standard/Extended Access Control Lists (ACLs). |
+| 🧩 **Interactive 32-Bit BitGrid** | Visual binary address matrix (`BitGridWidget`). | Displays Network bits (Primary Accent) vs Host bits (Secondary Accent) with interactive bit state toggles and live decimal conversions. |
+| 📖 **CIDR Reference Table** | Full-screen reference lookup (`CidrLookupPage`). | Covers all 33 IPv4 prefixes (`/0` through `/32`) with class filters (Class A, B, C, Subnets), real-time search, and host capacity specs. |
+| 🔄 **Base System Converter** | Multi-base IP translation (`IpConverterPage`). | Translates between Decimal, 32-bit dot-separated Binary (`11000000.10101000.00000001.00000001`), and Hexadecimal formats with individual code copy boxes. |
+| 🏷️ **IP Classifier & Inspector** | Address scope & classification (`IpClassifierPage`). | Categorizes addresses into Class A–E, RFC 1918 Private ranges, Public Internet space, Loopback, Link-Local, and Multicast scopes. |
+| 📏 **Sequential Range Generator** | Consecutive IP address enumerator (`RangeCalculatorPage`). | Generates sequential IP lists between start and end bounds with item indexing and bulk clipboard export. |
+| ⭐ **History & Favorites DB** | Offline storage powered by Hive. | Persists past calculations with timestamps, query search, starred favorites tab, and quick report inspection. |
+| 🌍 **Full Dual Localization** | Native English & Arabic support. | Dynamic RTL/LTR layout mirroring, high-contrast Slate text themes, and custom typography (`Cairo` & `Inter`). |
 
 ---
 
-## 🛠️ Technology Stack & Architecture | التقنيات وهيكلية المشروع
+## 🏗️ Architecture & Project Structure
 
-- **Framework:** Flutter 3.x (Dart 3.x)
-- **State Management:** `flutter_bloc` / BLoC Pattern
-- **Design System:** Custom Material 3 Token System (`AppSpacing`, `AppTextTheme`, `AppThemeExtension`)
-- **Local Persistence:** Hive DB (`hive`, `hive_flutter`)
-- **Typography:** Google Fonts (Cairo & Inter)
-- **Architecture Pattern:** Clean Architecture (Core, Domain, Data, Presentation)
+The project strictly follows **Clean Architecture** principles decoupled into feature-based modules:
 
 ```
 lib/
 ├── core/
-│   ├── network/             # Pure IPv4 & Cisco Engine Logic
-│   ├── theme/               # Material 3 Tokens, Colors & Spacing
-│   ├── utils/               # Page Transition Animation Helpers
-│   └── widgets/             # Shared UI Components (BitGrid, CidrPage, Inputs)
+│   ├── network/             # Pure IPv4 calculation algorithms & Cisco CLI engines
+│   ├── theme/               # Material 3 tokens (AppSpacing, AppTextTheme, AppThemeExtension)
+│   ├── utils/               # Page route transition animation helpers (AppPageRoutes)
+│   └── widgets/             # Shared components (BitGridWidget, CidrLookupPage, IpInputField)
 ├── features/
-│   ├── home/                # Feature Grid Dashboard & Hero Banner
-│   ├── ip_calculator/       # IPv4 Analysis & Dedicated Full Report Page
-│   ├── cisco_vlsm/          # VLSM Allocation Engine & Detailed Report Page
-│   ├── cisco_cli/           # Cisco IOS Configuration Generator
-│   ├── subnet_calculator/   # Equal Subnet Division Page
-│   ├── range_calculator/    # Consecutive IP Generator
-│   ├── ip_converter/        # Decimal/Binary/Hex Converter
-│   ├── ip_classifier/       # Scope & Class Inspector
-│   └── history/             # Hive History & Starred Favorites Storage
-├── l10n/                    # Localization (EN & AR AppLocalizations)
-└── main.dart                # App Entry Point & Hive Initialization
+│   ├── home/                # Responsive feature grid dashboard & hero banner
+│   ├── ip_calculator/       # Calculation BLoC, result cards, and IpDetailsPage
+│   ├── cisco_vlsm/          # VLSM engine, allocation cards, and VlsmDetailsPage
+│   ├── cisco_cli/           # Cisco IOS command generator interface
+│   ├── subnet_calculator/   # Equal subnet subdivider page
+│   ├── range_calculator/    # Consecutive IP range enumerator page
+│   ├── ip_converter/        # Multi-base system converter page
+│   ├── ip_classifier/       # Class & scope classification dashboard
+│   └── history/             # Hive local persistence storage & starred favorites
+├── l10n/                    # Localization infrastructure (AppLocalizations)
+└── main.dart                # Application entry point & Hive initialization
 ```
 
 ---
 
-## 🚀 Getting Started | كيفية التشغيل
+## ⚙️ Installation & Setup
 
 ### Prerequisites
-- [Flutter SDK](https://docs.flutter.dev/get-started/install) (`>= 3.0.0`)
-- Android Studio / VS Code with Dart & Flutter extensions
+- **Flutter SDK**: `^3.0.0`
+- **Dart SDK**: `^3.0.0`
+- **Android Studio / VS Code** with Flutter & Dart extensions installed
 
-### Installation Steps
+### Quick Start Guide
 
 1. **Clone the repository:**
    ```bash
@@ -80,28 +77,51 @@ lib/
    cd network_tools
    ```
 
-2. **Install dependencies:**
+2. **Fetch dependencies:**
    ```bash
    flutter pub get
    ```
 
-3. **Run the application:**
+3. **Verify project diagnostics:**
    ```bash
+   flutter analyze
+   ```
+
+4. **Launch the application:**
+   ```bash
+   # Run on connected device or emulator
    flutter run
+
+   # Or run specifically on Web / Chrome
+   flutter run -d chrome
    ```
 
 ---
 
-## 🎨 UI/UX Design System Highlights | أبرز المعايير التصميمية
+## 🎨 Design System Specifications
 
-1. **High Contrast Typography:** Explicit Slate-900 / Slate-50 text themes to ensure zero invisible text across Light & Dark modes.
-2. **Tactile Feedback:** Subtle micro-interactions, `AnimatedScale` card hover responses, and `HapticFeedback.lightImpact()` on tap.
-3. **Zero Layout Overflow:** All flexible containers utilize `Expanded`, `Flexible`, and `TextOverflow.ellipsis` for 100% responsive layouts across all Android & Web screens.
+The application uses an extended Material 3 design system built for clarity and tactile feedback:
+
+- **Tokens Centralization**: `AppSpacing` centralizes all padding, margins, border radii, and icon dimensions.
+- **High-Contrast Text System**: `AppTextTheme` defines explicit light (`Slate-900` / `Slate-700`) and dark (`Slate-50` / `Slate-300`) colors to eliminate invisible text.
+- **Theme Extensions**: `AppThemeExtension` handles feature gradients, status indicators, and custom badges.
+- **Responsive Layout**: Zero static pixel offsets; dynamic `Expanded` and `TextOverflow.ellipsis` protections ensure 100% overflow-free rendering across Android phones, tablets, and desktop browsers.
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please follow these steps:
+1. Fork the project repository.
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`).
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`).
+4. Push to the branch (`git checkout -b feature/AmazingFeature`).
+5. Open a Pull Request.
 
 ---
 
 ## 📄 License
 
-Distributed under the MIT License. See `LICENSE` for more information.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-Developed with ❤️ for Network Engineers and Developers.
+Developed with ❤️ for Network Engineers, Students, and Cisco Professionals.
