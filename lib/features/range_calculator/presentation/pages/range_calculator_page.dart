@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../logic/range_calculator_logic.dart';
+import 'package:flutter/services.dart';
+import '../../../../core/network/ip_network_engine.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../history/logic/history_storage.dart';
 
 class RangeCalculatorPage extends StatefulWidget {
   const RangeCalculatorPage({super.key});
@@ -9,18 +12,35 @@ class RangeCalculatorPage extends StatefulWidget {
 }
 
 class _RangeCalculatorPageState extends State<RangeCalculatorPage> {
-  final _startController = TextEditingController();
-  final _endController = TextEditingController();
+  final _startController = TextEditingController(text: '192.168.1.1');
+  final _endController = TextEditingController(text: '192.168.1.10');
   List<String> _range = [];
-  String? _error;
+  String? _errorKey;
 
   void _calculate() {
     setState(() {
-      _error = null;
-      _range = calculateIpRange(
-          _startController.text.trim(), _endController.text.trim());
+      _errorKey = null;
+      final start = _startController.text.trim();
+      final end = _endController.text.trim();
+
+      if (!IpNetworkEngine.isValidIp(start) || !IpNetworkEngine.isValidIp(end)) {
+        _errorKey = 'invalidInput';
+        _range = [];
+        return;
+      }
+
+      _range = IpNetworkEngine.calculateRange(start, end);
+
       if (_range.isEmpty) {
-        _error = 'Invalid input or range too large.';
+        _errorKey = 'invalidRange';
+      } else {
+        HistoryStorage.addHistoryEntry(
+          HistoryEntry(
+            title: 'IP Range ($start - $end)',
+            details: '${_range.length} IP addresses generated',
+            featureType: 'Range Calculator',
+          ),
+        );
       }
     });
   }
@@ -34,65 +54,111 @@ class _RangeCalculatorPageState extends State<RangeCalculatorPage> {
 
   @override
   Widget build(BuildContext context) {
+    final tr = AppLocalizations.of(context);
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Range Calculator')),
-      body: SingleChildScrollView(
+      appBar: AppBar(title: Text(tr.translate('rangeCalculator'))),
+      body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            TextField(
-              controller: _startController,
-              decoration: const InputDecoration(
-                labelText: 'Start IP',
-                hintText: '192.168.1.1',
-                border: OutlineInputBorder(),
+            Card(
+              elevation: 2,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    TextField(
+                      controller: _startController,
+                      decoration: InputDecoration(
+                        labelText: tr.translate('startIp'),
+                        hintText: '192.168.1.1',
+                        border: const OutlineInputBorder(),
+                      ),
+                      keyboardType: TextInputType.number,
+                    ),
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: _endController,
+                      decoration: InputDecoration(
+                        labelText: tr.translate('endIp'),
+                        hintText: '192.168.1.10',
+                        border: const OutlineInputBorder(),
+                      ),
+                      keyboardType: TextInputType.number,
+                    ),
+                    const SizedBox(height: 16),
+                    ElevatedButton.icon(
+                      onPressed: _calculate,
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(48),
+                      ),
+                      icon: const Icon(Icons.linear_scale),
+                      label: Text(tr.translate('calculateRange')),
+                    ),
+                  ],
+                ),
               ),
-              keyboardType: TextInputType.number,
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _endController,
-              decoration: const InputDecoration(
-                labelText: 'End IP',
-                hintText: '192.168.1.100',
-                border: OutlineInputBorder(),
-              ),
-              keyboardType: TextInputType.number,
-            ),
-            const SizedBox(height: 12),
-            ElevatedButton.icon(
-              onPressed: _calculate,
-              icon: const Icon(Icons.linear_scale),
-              label: const Text('Calculate Range'),
             ),
             const SizedBox(height: 16),
-            if (_error != null)
+            if (_errorKey != null)
               Card(
                 color: Theme.of(context).colorScheme.error,
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: Text(_error!,
-                      style: const TextStyle(color: Colors.white)),
+                  child: Text(
+                    tr.translate(_errorKey!),
+                    style: const TextStyle(color: Colors.white),
+                  ),
                 ),
               ),
-            if (_range.isNotEmpty && _error == null)
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text('IP Range:'),
-                      const SizedBox(height: 8),
-                      SizedBox(
-                        height: 200,
-                        child: ListView.builder(
-                          itemCount: _range.length,
-                          itemBuilder: (context, i) => Text(_range[i]),
+            if (_range.isNotEmpty && _errorKey == null)
+              Expanded(
+                child: Card(
+                  elevation: 2,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              '${tr.translate('rangeCalculator')} (${_range.length}):',
+                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.copy),
+                              tooltip: tr.translate('copy'),
+                              onPressed: () {
+                                Clipboard.setData(ClipboardData(text: _range.join('\n')));
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text(tr.translate('copiedToClipboard'))),
+                                );
+                              },
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
+                        const Divider(),
+                        Expanded(
+                          child: ListView.builder(
+                            itemCount: _range.length,
+                            itemBuilder: (context, i) => ListTile(
+                              dense: true,
+                              leading: CircleAvatar(
+                                radius: 12,
+                                child: Text('${i + 1}', style: const TextStyle(fontSize: 10)),
+                              ),
+                              title: Text(_range[i]),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

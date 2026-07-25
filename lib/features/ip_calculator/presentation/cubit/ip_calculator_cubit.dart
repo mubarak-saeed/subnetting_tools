@@ -26,12 +26,12 @@ class IpCalculatorSuccess extends IpCalculatorState {
 }
 
 class IpCalculatorError extends IpCalculatorState {
-  final String message;
+  final String messageKey;
 
-  const IpCalculatorError(this.message);
+  const IpCalculatorError([this.messageKey = 'invalidInput']);
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [messageKey];
 }
 
 // Cubit
@@ -45,16 +45,21 @@ class IpCalculatorCubit extends Cubit<IpCalculatorState> {
       emit(IpCalculatorLoading());
 
       if (!repository.validateIpAddress(ipAddress)) {
-        emit(const IpCalculatorError('Invalid IP address format'));
+        emit(const IpCalculatorError('invalidInput'));
         return;
       }
 
       final result = repository.calculateAll(ipAddress, subnetMask);
-      await HistoryStorage.addHistory(
-          'IP: $ipAddress/$subnetMask\nNetwork: ${result.networkAddress}\nBroadcast: ${result.broadcastAddress}\nClass: ${result.networkClass}\nHosts: ${result.totalHosts}');
+      await HistoryStorage.addHistoryEntry(
+        HistoryEntry(
+          title: '$ipAddress/$subnetMask',
+          details: 'Network: ${result.networkAddress}\nBroadcast: ${result.broadcastAddress}\nNetmask: ${result.netmask}\nHosts: ${result.usableHosts}',
+          featureType: 'IP Calculator',
+        ),
+      );
       emit(IpCalculatorSuccess(result));
-    } catch (e) {
-      emit(IpCalculatorError(e.toString()));
+    } catch (_) {
+      emit(const IpCalculatorError('invalidInput'));
     }
   }
 

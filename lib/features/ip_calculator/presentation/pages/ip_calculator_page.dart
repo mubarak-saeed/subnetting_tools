@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/network/ip_network_engine.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../cubit/ip_calculator_cubit.dart';
 import '../widgets/ip_result_card.dart';
 import '../widgets/subnet_result_card.dart';
@@ -14,7 +16,7 @@ class IpCalculatorPage extends StatefulWidget {
 }
 
 class _IpCalculatorPageState extends State<IpCalculatorPage> {
-  final _ipController = TextEditingController();
+  final _ipController = TextEditingController(text: '192.168.1.1');
   int _subnetMask = 24;
 
   @override
@@ -25,9 +27,11 @@ class _IpCalculatorPageState extends State<IpCalculatorPage> {
 
   @override
   Widget build(BuildContext context) {
+    final tr = AppLocalizations.of(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('IP Calculator'),
+        title: Text(tr.translate('ipCalculator')),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -35,6 +39,7 @@ class _IpCalculatorPageState extends State<IpCalculatorPage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Card(
+              elevation: 2,
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
@@ -42,7 +47,7 @@ class _IpCalculatorPageState extends State<IpCalculatorPage> {
                     TextField(
                       controller: _ipController,
                       decoration: InputDecoration(
-                        labelText: 'IP Address',
+                        labelText: tr.translate('enterIp'),
                         hintText: '192.168.1.1',
                         border: const OutlineInputBorder(),
                         suffixIcon: IconButton(
@@ -55,7 +60,7 @@ class _IpCalculatorPageState extends State<IpCalculatorPage> {
                     const SizedBox(height: 16),
                     Row(
                       children: [
-                        const Text('Subnet Mask: '),
+                        Text('${tr.translate('netmask')}: '),
                         Expanded(
                           child: Slider(
                             value: _subnetMask.toDouble(),
@@ -70,18 +75,18 @@ class _IpCalculatorPageState extends State<IpCalculatorPage> {
                             },
                           ),
                         ),
-                        Text('/$_subnetMask'),
+                        Text('/$_subnetMask',
+                            style: const TextStyle(fontWeight: FontWeight.bold)),
                         IconButton(
-                          icon: const Icon(Icons.edit),
-                          tooltip: 'Edit as dotted',
+                          icon: const Icon(Icons.edit_note),
+                          tooltip: tr.translate('editAsDotted'),
                           onPressed: () async {
                             final mask = await showDialog<String>(
                               context: context,
                               builder: (context) {
                                 final controller = TextEditingController();
                                 return AlertDialog(
-                                  title:
-                                      const Text('Enter Subnet Mask (dotted)'),
+                                  title: Text(tr.translate('enterSubnetMaskDotted')),
                                   content: TextField(
                                     controller: controller,
                                     decoration: const InputDecoration(
@@ -91,7 +96,7 @@ class _IpCalculatorPageState extends State<IpCalculatorPage> {
                                   actions: [
                                     TextButton(
                                       onPressed: () => Navigator.pop(context),
-                                      child: const Text('Cancel'),
+                                      child: Text(tr.translate('clear')),
                                     ),
                                     TextButton(
                                       onPressed: () => Navigator.pop(
@@ -103,13 +108,13 @@ class _IpCalculatorPageState extends State<IpCalculatorPage> {
                               },
                             );
                             if (mask != null && mask.isNotEmpty) {
-                              final bits = _dottedToCidr(mask);
+                              final bits = IpNetworkEngine.maskToCidr(mask.trim());
                               if (bits != null) {
                                 setState(() => _subnetMask = bits);
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text('Invalid subnet mask!')),
+                                  SnackBar(
+                                      content: Text(tr.translate('invalidSubnetMask'))),
                                 );
                               }
                             }
@@ -121,12 +126,15 @@ class _IpCalculatorPageState extends State<IpCalculatorPage> {
                     ElevatedButton.icon(
                       onPressed: () {
                         context.read<IpCalculatorCubit>().calculateIp(
-                              _ipController.text,
+                              _ipController.text.trim(),
                               _subnetMask,
                             );
                       },
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(48),
+                      ),
                       icon: const Icon(Icons.calculate),
-                      label: const Text('Calculate'),
+                      label: Text(tr.translate('calculate')),
                     ),
                   ],
                 ),
@@ -151,7 +159,7 @@ class _IpCalculatorPageState extends State<IpCalculatorPage> {
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Text(
-                        state.message,
+                        tr.translate(state.messageKey),
                         style: const TextStyle(color: Colors.white),
                       ),
                     ),
@@ -164,21 +172,5 @@ class _IpCalculatorPageState extends State<IpCalculatorPage> {
         ),
       ),
     );
-  }
-
-  int? _dottedToCidr(String mask) {
-    final parts = mask.split('.');
-    if (parts.length != 4) return null;
-    try {
-      final binary = parts
-          .map((e) => int.parse(e).toRadixString(2).padLeft(8, '0'))
-          .join();
-      // يجب أن يكون الباينري عبارة عن سلسلة من 1 ثم 0 فقط (بدون تداخل)
-      final match = RegExp(r'^(1+)(0+)$|^(1+)$').firstMatch(binary);
-      if (match == null) return null;
-      return !binary.contains('0') ? 32 : binary.indexOf('0');
-    } catch (_) {
-      return null;
-    }
   }
 }

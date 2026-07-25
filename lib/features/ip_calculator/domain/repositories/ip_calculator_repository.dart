@@ -7,8 +7,6 @@ abstract class IpCalculatorRepository {
   String convertToBinary(String ipAddress);
   String convertToDecimal(String binaryIp);
   String determineIpClass(String ipAddress);
-  List<String> calculateSubnets(
-      String networkAddress, int subnetMask, int numberOfSubnets);
   bool validateIpAddress(String ipAddress);
   IpAddress calculateAll(String ipAddress, int subnetMask);
 }
