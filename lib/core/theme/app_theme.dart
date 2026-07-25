@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
+/// Professional Theme System supporting Light and Dark modes with local Cairo font typography.
 class AppTheme {
   // Brand Color Palette
   static const Color primaryIndigo = Color(0xFF4F46E5);
@@ -17,6 +17,7 @@ class AppTheme {
 
   static final ThemeData lightTheme = ThemeData(
     useMaterial3: true,
+    fontFamily: 'Cairo',
     brightness: Brightness.light,
     scaffoldBackgroundColor: lightBackground,
     primaryColor: primaryIndigo,
@@ -29,18 +30,18 @@ class AppTheme {
       surface: lightSurface,
       surfaceContainerHighest: lightSurfaceVariant,
     ),
-    textTheme: GoogleFonts.cairoTextTheme(ThemeData.light().textTheme),
-    appBarTheme: AppBarTheme(
+    appBarTheme: const AppBarTheme(
       centerTitle: true,
       elevation: 0,
       backgroundColor: lightBackground,
       surfaceTintColor: Colors.transparent,
-      titleTextStyle: GoogleFonts.cairo(
+      titleTextStyle: TextStyle(
+        fontFamily: 'Cairo',
         fontSize: 20,
         fontWeight: FontWeight.bold,
-        color: const Color(0xFF0F172A),
+        color: Color(0xFF0F172A),
       ),
-      iconTheme: const IconThemeData(color: Color(0xFF0F172A)),
+      iconTheme: IconThemeData(color: Color(0xFF0F172A)),
     ),
     cardTheme: CardThemeData(
       elevation: 0,
@@ -71,8 +72,8 @@ class AppTheme {
         borderRadius: BorderRadius.circular(16),
         borderSide: const BorderSide(color: Colors.redAccent, width: 1.5),
       ),
-      labelStyle: const TextStyle(color: Color(0xFF475569), fontSize: 14),
-      hintStyle: const TextStyle(color: Color(0xFF94A3B8), fontSize: 14),
+      labelStyle: const TextStyle(fontFamily: 'Cairo', color: Color(0xFF475569), fontSize: 14),
+      hintStyle: const TextStyle(fontFamily: 'Cairo', color: Color(0xFF94A3B8), fontSize: 14),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
@@ -84,7 +85,8 @@ class AppTheme {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
-        textStyle: GoogleFonts.cairo(
+        textStyle: const TextStyle(
+          fontFamily: 'Cairo',
           fontSize: 16,
           fontWeight: FontWeight.bold,
         ),
@@ -96,12 +98,13 @@ class AppTheme {
       thumbColor: primaryIndigo,
       overlayColor: primaryIndigo.withValues(alpha: 0.15),
       valueIndicatorColor: primaryIndigo,
-      valueIndicatorTextStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+      valueIndicatorTextStyle: const TextStyle(fontFamily: 'Cairo', color: Colors.white, fontWeight: FontWeight.bold),
     ),
   );
 
   static final ThemeData darkTheme = ThemeData(
     useMaterial3: true,
+    fontFamily: 'Cairo',
     brightness: Brightness.dark,
     scaffoldBackgroundColor: darkBackground,
     primaryColor: primaryIndigo,
@@ -114,18 +117,18 @@ class AppTheme {
       surface: darkSurface,
       surfaceContainerHighest: darkSurfaceVariant,
     ),
-    textTheme: GoogleFonts.cairoTextTheme(ThemeData.dark().textTheme),
-    appBarTheme: AppBarTheme(
+    appBarTheme: const AppBarTheme(
       centerTitle: true,
       elevation: 0,
       backgroundColor: darkBackground,
       surfaceTintColor: Colors.transparent,
-      titleTextStyle: GoogleFonts.cairo(
+      titleTextStyle: TextStyle(
+        fontFamily: 'Cairo',
         fontSize: 20,
         fontWeight: FontWeight.bold,
         color: Colors.white,
       ),
-      iconTheme: const IconThemeData(color: Colors.white),
+      iconTheme: IconThemeData(color: Colors.white),
     ),
     cardTheme: CardThemeData(
       elevation: 0,
@@ -156,8 +159,8 @@ class AppTheme {
         borderRadius: BorderRadius.circular(16),
         borderSide: const BorderSide(color: Colors.redAccent, width: 1.5),
       ),
-      labelStyle: const TextStyle(color: Color(0xFF94A3B8), fontSize: 14),
-      hintStyle: const TextStyle(color: Color(0xFF64748B), fontSize: 14),
+      labelStyle: const TextStyle(fontFamily: 'Cairo', color: Color(0xFF94A3B8), fontSize: 14),
+      hintStyle: const TextStyle(fontFamily: 'Cairo', color: Color(0xFF64748B), fontSize: 14),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
@@ -169,7 +172,8 @@ class AppTheme {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
-        textStyle: GoogleFonts.cairo(
+        textStyle: const TextStyle(
+          fontFamily: 'Cairo',
           fontSize: 16,
           fontWeight: FontWeight.bold,
         ),
@@ -181,7 +185,7 @@ class AppTheme {
       thumbColor: const Color(0xFF6366F1),
       overlayColor: const Color(0xFF6366F1).withValues(alpha: 0.2),
       valueIndicatorColor: const Color(0xFF6366F1),
-      valueIndicatorTextStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+      valueIndicatorTextStyle: const TextStyle(fontFamily: 'Cairo', color: Colors.white, fontWeight: FontWeight.bold),
     ),
   );
 }

@@ -11,7 +11,10 @@ import '../../../ip_classifier/presentation/pages/ip_classifier_page.dart';
 import '../../../ip_converter/presentation/pages/ip_converter_page.dart';
 import '../../../range_calculator/presentation/pages/range_calculator_page.dart';
 import '../../../subnet_calculator/presentation/pages/subnet_calculator_page.dart';
+import '../widgets/home_feature_card.dart';
+import '../widgets/home_hero_banner.dart';
 
+/// Main Dashboard Page presenting all network tools and utilities in an intuitive grid.
 class HomePage extends StatefulWidget {
   final VoidCallback? onToggleTheme;
   final VoidCallback? onToggleLocale;
@@ -36,133 +39,72 @@ class _HomePageState extends State<HomePage> {
         'title': tr.translate('ciscoVlsm'),
         'description': tr.translate('ciscoVlsmDesc'),
         'icon': Icons.architecture,
-        'color': const Color(0xFF0284C7),
         'gradient': [const Color(0xFF38BDF8), const Color(0xFF0284C7)],
-        'onTap': () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const CiscoVlsmPage(),
-            ),
-          );
-        },
+        'onTap': () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CiscoVlsmPage())),
       },
       {
         'id': 'ciscoCli',
         'title': tr.translate('ciscoCli'),
         'description': tr.translate('ciscoCliDesc'),
         'icon': Icons.terminal,
-        'color': const Color(0xFF4F46E5),
         'gradient': [const Color(0xFF6366F1), const Color(0xFF4F46E5)],
-        'onTap': () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const CiscoCliPage(),
-            ),
-          );
-        },
+        'onTap': () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CiscoCliPage())),
       },
       {
         'id': 'ipCalculator',
         'title': tr.translate('ipCalculator'),
         'description': tr.translate('ipCalculatorDesc'),
         'icon': Icons.calculate,
-        'color': const Color(0xFF10B981),
         'gradient': [const Color(0xFF34D399), const Color(0xFF10B981)],
-        'onTap': () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => BlocProvider(
-                create: (context) => IpCalculatorCubit(
-                  IpCalculatorRepositoryImpl(),
-                ),
-                child: const IpCalculatorPage(),
-              ),
+        'onTap': () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => BlocProvider(
+              create: (_) => IpCalculatorCubit(IpCalculatorRepositoryImpl()),
+              child: const IpCalculatorPage(),
             ),
-          );
-        },
+          ),
+        ),
       },
       {
         'id': 'subnetCalculator',
         'title': tr.translate('subnetCalculator'),
         'description': tr.translate('subnetCalculatorDesc'),
         'icon': Icons.alt_route,
-        'color': const Color(0xFFF59E0B),
         'gradient': [const Color(0xFFFBBF24), const Color(0xFFF59E0B)],
-        'onTap': () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const SubnetCalculatorPage(),
-            ),
-          );
-        },
+        'onTap': () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SubnetCalculatorPage())),
       },
       {
         'id': 'ipConverter',
         'title': tr.translate('ipConverter'),
         'description': tr.translate('ipConverterDesc'),
         'icon': Icons.swap_horiz,
-        'color': const Color(0xFF8B5CF6),
         'gradient': [const Color(0xFFA78BFA), const Color(0xFF8B5CF6)],
-        'onTap': () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const IpConverterPage(),
-            ),
-          );
-        },
+        'onTap': () => Navigator.push(context, MaterialPageRoute(builder: (_) => const IpConverterPage())),
       },
       {
         'id': 'ipClassifier',
         'title': tr.translate('ipClassifier'),
         'description': tr.translate('ipClassifierDesc'),
         'icon': Icons.category,
-        'color': const Color(0xFFEC4899),
         'gradient': [const Color(0xFFF472B6), const Color(0xFFEC4899)],
-        'onTap': () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const IpClassifierPage(),
-            ),
-          );
-        },
+        'onTap': () => Navigator.push(context, MaterialPageRoute(builder: (_) => const IpClassifierPage())),
       },
       {
         'id': 'rangeCalculator',
         'title': tr.translate('rangeCalculator'),
         'description': tr.translate('rangeCalculatorDesc'),
         'icon': Icons.linear_scale,
-        'color': const Color(0xFF06B6D4),
         'gradient': [const Color(0xFF38BDF8), const Color(0xFF06B6D4)],
-        'onTap': () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const RangeCalculatorPage(),
-            ),
-          );
-        },
+        'onTap': () => Navigator.push(context, MaterialPageRoute(builder: (_) => const RangeCalculatorPage())),
       },
       {
         'id': 'history',
         'title': tr.translate('history'),
         'description': tr.translate('historyDesc'),
         'icon': Icons.history,
-        'color': const Color(0xFF64748B),
         'gradient': [const Color(0xFF94A3B8), const Color(0xFF64748B)],
-        'onTap': () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const HistoryPage(),
-            ),
-          );
-        },
+        'onTap': () => Navigator.push(context, MaterialPageRoute(builder: (_) => const HistoryPage())),
       },
     ];
 
@@ -197,11 +139,7 @@ class _HomePageState extends State<HomePage> {
         ),
         actions: [
           IconButton(
-            icon: Icon(
-              theme.brightness == Brightness.dark
-                  ? Icons.light_mode
-                  : Icons.dark_mode,
-            ),
+            icon: Icon(theme.brightness == Brightness.dark ? Icons.light_mode : Icons.dark_mode),
             tooltip: tr.translate('themeMode'),
             onPressed: widget.onToggleTheme,
           ),
@@ -215,74 +153,7 @@ class _HomePageState extends State<HomePage> {
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
-          // Hero Banner
-          SliverToBoxAdapter(
-            child: Container(
-              margin: const EdgeInsets.all(16.0),
-              padding: const EdgeInsets.all(20.0),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    theme.colorScheme.primary,
-                    theme.colorScheme.tertiary,
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: BorderRadius.circular(24),
-                boxShadow: [
-                  BoxShadow(
-                    color: theme.colorScheme.primary.withValues(alpha: 0.35),
-                    blurRadius: 16,
-                    offset: const Offset(0, 8),
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.25),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: const Text(
-                          'Network Engineering & Student Toolkit',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 11,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      const Icon(Icons.workspace_premium, color: Colors.amberAccent, size: 24),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    tr.translate('appTitle'),
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    tr.translate('appSubtitle'),
-                    style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.85),
-                      fontSize: 13,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+          const SliverToBoxAdapter(child: HomeHeroBanner()),
 
           // Search Bar
           SliverToBoxAdapter(
@@ -306,7 +177,7 @@ class _HomePageState extends State<HomePage> {
 
           const SliverToBoxAdapter(child: SizedBox(height: 12)),
 
-          // Grid of Feature Cards
+          // Feature Grid
           SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             sliver: SliverGrid(
@@ -319,70 +190,12 @@ class _HomePageState extends State<HomePage> {
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
                   final feature = filteredFeatures[index];
-                  final List<Color> gradient = feature['gradient'] as List<Color>;
-
-                  return Card(
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: InkWell(
-                      onTap: feature['onTap'] as VoidCallback,
-                      borderRadius: BorderRadius.circular(20),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(colors: gradient),
-                                borderRadius: BorderRadius.circular(14),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: gradient.last.withValues(alpha: 0.4),
-                                    blurRadius: 8,
-                                    offset: const Offset(0, 4),
-                                  ),
-                                ],
-                              ),
-                              child: Icon(
-                                feature['icon'] as IconData,
-                                color: Colors.white,
-                                size: 24,
-                              ),
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  feature['title'] as String,
-                                  style: theme.textTheme.titleMedium?.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 15,
-                                      ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                const SizedBox(height: 2),
-                                Text(
-                                  feature['description'] as String,
-                                  style: theme.textTheme.bodySmall?.copyWith(
-                                        fontSize: 11,
-                                        color: theme.textTheme.bodySmall?.color
-                                            ?.withValues(alpha: 0.7),
-                                      ),
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                  return HomeFeatureCard(
+                    title: feature['title'] as String,
+                    description: feature['description'] as String,
+                    icon: feature['icon'] as IconData,
+                    gradientColors: feature['gradient'] as List<Color>,
+                    onTap: feature['onTap'] as VoidCallback,
                   );
                 },
                 childCount: filteredFeatures.length,
