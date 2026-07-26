@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:network_tools/core/network/ip_network_engine.dart';
+import 'package:subnetting_tools/core/network/ip_network_engine.dart';
 
 void main() {
   group('IpNetworkEngine - Validation & Basic Conversions', () {
