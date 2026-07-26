@@ -4,6 +4,7 @@ import '../../../../core/network/cisco_network_engine.dart';
 import '../../../../core/network/ip_network_engine.dart';
 import '../../../../core/widgets/cidr_selector_chips.dart';
 import '../../../../core/widgets/ip_input_field.dart';
+import '../../../../core/widgets/responsive_layout.dart';
 import '../../../../l10n/app_localizations.dart';
 
 class CiscoCliPage extends StatefulWidget {
@@ -53,7 +54,9 @@ class _CiscoCliPageState extends State<CiscoCliPage> {
 
     return Scaffold(
       appBar: AppBar(title: Text(tr.translate('ciscoCli'))),
-      body: SingleChildScrollView(
+      body: ResponsiveLayout(
+        maxWidth: 1000.0,
+        child: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         physics: const BouncingScrollPhysics(),
         child: Column(
@@ -231,6 +234,7 @@ class _CiscoCliPageState extends State<CiscoCliPage> {
           ],
         ),
       ),
+    ),
     );
   }
 

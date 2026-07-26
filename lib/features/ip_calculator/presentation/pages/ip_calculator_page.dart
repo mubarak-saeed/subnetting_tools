@@ -5,6 +5,7 @@ import '../../../../core/utils/page_routes.dart';
 import '../../../../core/widgets/cidr_selector_chips.dart';
 import '../../../../core/widgets/ip_input_field.dart';
 import '../../../../core/widgets/quick_preset_chips.dart';
+import '../../../../core/widgets/responsive_layout.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../cubit/ip_calculator_cubit.dart';
 import '../widgets/ip_result_card.dart';
@@ -37,7 +38,9 @@ class _IpCalculatorPageState extends State<IpCalculatorPage> {
       appBar: AppBar(
         title: Text(tr.translate('ipCalculator')),
       ),
-      body: SingleChildScrollView(
+      body: ResponsiveLayout(
+        maxWidth: 1000.0,
+        child: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         physics: const BouncingScrollPhysics(),
         child: Column(
@@ -231,6 +234,7 @@ class _IpCalculatorPageState extends State<IpCalculatorPage> {
           ],
         ),
       ),
+    ),
     );
   }
 }

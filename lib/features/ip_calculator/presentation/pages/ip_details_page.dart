@@ -4,6 +4,7 @@ import '../../../../core/network/ip_network_engine.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_theme_extension.dart';
 import '../../../../core/widgets/bit_grid_widget.dart';
+import '../../../../core/widgets/responsive_layout.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/ip_address.dart';
 import '../widgets/subnet_result_card.dart';
@@ -37,7 +38,9 @@ class IpDetailsPage extends StatelessWidget {
           ),
         ],
       ),
-      body: SingleChildScrollView(
+      body: ResponsiveLayout(
+        maxWidth: 1000.0,
+        child: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSpacing.lg),
         physics: const BouncingScrollPhysics(),
         child: Column(
@@ -174,12 +177,12 @@ class IpDetailsPage extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.md),
 
-            // ── 5. Subnet List ────────────────────────────────────────
             SubnetResultCard(ipAddress: ipAddress),
             const SizedBox(height: AppSpacing.xl),
           ],
         ),
       ),
+    ),
     );
   }
 

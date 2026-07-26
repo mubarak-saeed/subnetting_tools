@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import '../../../../core/network/ip_network_engine.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/ip_input_field.dart';
+import '../../../../core/widgets/responsive_layout.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../history/logic/history_storage.dart';
 
@@ -61,7 +62,9 @@ class _RangeCalculatorPageState extends State<RangeCalculatorPage> {
 
     return Scaffold(
       appBar: AppBar(title: Text(tr.translate('rangeCalculator'))),
-      body: Padding(
+      body: ResponsiveLayout(
+        maxWidth: 1000.0,
+        child: Padding(
         padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -215,6 +218,7 @@ class _RangeCalculatorPageState extends State<RangeCalculatorPage> {
           ],
         ),
       ),
+    ),
     );
   }
 }

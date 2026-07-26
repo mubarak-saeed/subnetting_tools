@@ -4,6 +4,7 @@ import '../../../../core/network/cisco_network_engine.dart';
 import '../../../../core/utils/page_routes.dart';
 import '../../../../core/widgets/cidr_selector_chips.dart';
 import '../../../../core/widgets/ip_input_field.dart';
+import '../../../../core/widgets/responsive_layout.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../history/logic/history_storage.dart';
 import '../widgets/vlsm_allocation_card.dart';
@@ -115,7 +116,9 @@ class _CiscoVlsmPageState extends State<CiscoVlsmPage> {
 
     return Scaffold(
       appBar: AppBar(title: Text(tr.translate('ciscoVlsm'))),
-      body: SingleChildScrollView(
+      body: ResponsiveLayout(
+        maxWidth: 1000.0,
+        child: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         physics: const BouncingScrollPhysics(),
         child: Column(
@@ -305,6 +308,7 @@ Requested: ${a.requestedHosts} | Allocated: ${a.allocatedHosts} | Wasted: ${a.wa
           ],
         ),
       ),
+    ),
     );
   }
 }

@@ -4,6 +4,7 @@ import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_theme_extension.dart';
 import '../../../../core/utils/page_routes.dart';
 import '../../../../core/widgets/cidr_lookup_page.dart';
+import '../../../../core/widgets/responsive_layout.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../cisco_cli/presentation/pages/cisco_cli_page.dart';
 import '../../../cisco_vlsm/presentation/pages/cisco_vlsm_page.dart';
@@ -58,7 +59,9 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       appBar: _buildAppBar(context, tr, theme, isDark),
-      body: CustomScrollView(
+      body: ResponsiveLayout(
+        maxWidth: 1000.0,
+        child: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
           // ─── Hero Banner ───────────────────────────────────────
@@ -126,6 +129,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
+    ),
     );
   }
 

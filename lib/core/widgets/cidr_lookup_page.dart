@@ -4,6 +4,7 @@ import '../../l10n/app_localizations.dart';
 import '../network/ip_network_engine.dart';
 import '../theme/app_spacing.dart';
 import '../theme/app_theme_extension.dart';
+import 'responsive_layout.dart';
 
 /// Full-Screen CIDR & Subnet Mask Reference Lookup Page.
 ///
@@ -69,7 +70,9 @@ class _CidrLookupPageState extends State<CidrLookupPage> {
       appBar: AppBar(
         title: Text(tr.translate('cidrReferenceTable')),
       ),
-      body: CustomScrollView(
+      body: ResponsiveLayout(
+        maxWidth: 1000.0,
+        child: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
           // ── 1. Hero Overview Header Card ─────────────────────────
@@ -312,6 +315,7 @@ class _CidrLookupPageState extends State<CidrLookupPage> {
           const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.xl)),
         ],
       ),
+    ),
     );
   }
 

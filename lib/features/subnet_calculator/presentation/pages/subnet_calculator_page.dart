@@ -5,6 +5,7 @@ import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/cidr_selector_chips.dart';
 import '../../../../core/widgets/ip_input_field.dart';
 import '../../../../core/widgets/quick_preset_chips.dart';
+import '../../../../core/widgets/responsive_layout.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../history/logic/history_storage.dart';
 
@@ -65,7 +66,9 @@ class _SubnetCalculatorPageState extends State<SubnetCalculatorPage> {
 
     return Scaffold(
       appBar: AppBar(title: Text(tr.translate('subnetCalculator'))),
-      body: SingleChildScrollView(
+      body: ResponsiveLayout(
+        maxWidth: 1000.0,
+        child: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSpacing.lg),
         physics: const BouncingScrollPhysics(),
         child: Column(
@@ -339,6 +342,7 @@ class _SubnetCalculatorPageState extends State<SubnetCalculatorPage> {
           ],
         ),
       ),
+    ),
     );
   }
 }

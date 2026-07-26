@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/network/ip_network_engine.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/utils/page_routes.dart';
+import '../../../../core/widgets/responsive_layout.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../ip_calculator/data/repositories/ip_calculator_repository_impl.dart';
 import '../../../ip_calculator/presentation/pages/ip_details_page.dart';
@@ -123,7 +124,9 @@ class _HistoryPageState extends State<HistoryPage> with SingleTickerProviderStat
           ],
         ),
       ),
-      body: Column(
+      body: ResponsiveLayout(
+        maxWidth: 1000.0,
+        child: Column(
         children: [
           Padding(
             padding: const EdgeInsets.all(AppSpacing.lg),
@@ -154,6 +157,7 @@ class _HistoryPageState extends State<HistoryPage> with SingleTickerProviderStat
           ),
         ],
       ),
+    ),
     );
   }
 

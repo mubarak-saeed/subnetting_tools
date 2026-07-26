@@ -4,6 +4,7 @@ import '../../../../core/network/ip_network_engine.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/bit_grid_widget.dart';
 import '../../../../core/widgets/ip_input_field.dart';
+import '../../../../core/widgets/responsive_layout.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../history/logic/history_storage.dart';
 
@@ -74,7 +75,9 @@ class _IpConverterPageState extends State<IpConverterPage> {
 
     return Scaffold(
       appBar: AppBar(title: Text(tr.translate('ipConverter'))),
-      body: SingleChildScrollView(
+      body: ResponsiveLayout(
+        maxWidth: 1000.0,
+        child: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSpacing.lg),
         physics: const BouncingScrollPhysics(),
         child: Column(
@@ -198,6 +201,7 @@ class _IpConverterPageState extends State<IpConverterPage> {
           ],
         ),
       ),
+    ),
     );
   }
 

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import '../../../../core/network/cisco_network_engine.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_theme_extension.dart';
+import '../../../../core/widgets/responsive_layout.dart';
 import '../../../../l10n/app_localizations.dart';
 
 /// Full-Screen Detailed VLSM Subnet Plan Report Screen.
@@ -40,7 +41,9 @@ class VlsmDetailsPage extends StatelessWidget {
           ),
         ],
       ),
-      body: SingleChildScrollView(
+      body: ResponsiveLayout(
+        maxWidth: 1000.0,
+        child: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSpacing.lg),
         physics: const BouncingScrollPhysics(),
         child: Column(
@@ -222,6 +225,7 @@ class VlsmDetailsPage extends StatelessWidget {
           ],
         ),
       ),
+    ),
     );
   }
 
